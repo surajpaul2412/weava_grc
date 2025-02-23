@@ -1,0 +1,37 @@
+/* Center the login form */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f4f4f4;
+  }
+  
+  /* Login card styling */
+  .login-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+  }
+  
+  /* Form fields */
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  /* Button styling */
+  .login-btn {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  /* Signup link */
+  .signup-text {
+    margin-top: 1rem;
+    font-size: 14px;
+  }
+  

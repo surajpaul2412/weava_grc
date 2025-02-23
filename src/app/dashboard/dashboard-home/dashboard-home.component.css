@@ -1,0 +1,43 @@
+.dashboard-container {
+  display: flex;
+  height: 100vh; /* Full screen height */
+}
+
+/* Sidebar (35% width) */
+app-sidebar {
+  width: 15%;
+  background: #f4f4f4;
+  min-height: 100vh;
+  padding: 15px;
+}
+
+/* Main Dashboard (75% width) */
+.dashboard-main {
+  width: 85%;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+/* Header and Footer inside the Dashboard */
+app-header {
+  background: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+app-footer {
+  background: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-top: auto; /* Push footer to the bottom */
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  flex-grow: 1;
+  padding: 20px;
+}
