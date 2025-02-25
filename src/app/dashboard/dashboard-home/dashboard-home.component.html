@@ -1,11 +1,13 @@
 <div class="dashboard-container">
   <!-- Sidebar (35% width) -->
-  <app-sidebar></app-sidebar>
+  <div class="sidebar">
+    <app-sidebar [folders]="folders"></app-sidebar> <!-- ✅ Pass folders to sidebar -->
+  </div>
 
   <!-- Main Dashboard (75% width) -->
   <div class="dashboard-main">
     <app-header></app-header> <!-- ✅ Header inside dashboard -->
-    
+
     <div class="dashboard-content">
       <h2>Dashboard</h2>
       <p>Welcome to the dashboard!</p>

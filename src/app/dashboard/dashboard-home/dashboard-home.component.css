@@ -1,43 +1,52 @@
 .dashboard-container {
   display: flex;
-  height: 100vh; /* Full screen height */
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* Sidebar (35% width) */
-app-sidebar {
-  width: 15%;
-  background: #f4f4f4;
-  min-height: 100vh;
-  padding: 15px;
+.sidebar {
+  width: 35%;
+  background-color: #f4f4f4;
+  padding: 20px;
+  overflow-y: auto;
 }
 
-/* Main Dashboard (75% width) */
 .dashboard-main {
-  width: 85%;
+  width: 75%;
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  min-height: 100vh;
+  background-color: #ffffff;
 }
 
-/* Header and Footer inside the Dashboard */
-app-header {
-  background: #333;
-  color: white;
-  padding: 10px;
-  text-align: center;
-}
-
-app-footer {
-  background: #333;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  margin-top: auto; /* Push footer to the bottom */
-}
-
-/* Dashboard Content */
 .dashboard-content {
   flex-grow: 1;
   padding: 20px;
+  overflow-y: auto;
+}
+
+.folders-section {
+  margin-top: 20px;
+}
+
+.folder-list {
+  list-style: none;
+  padding: 0;
+}
+
+.folder-list li {
+  background-color: #e3e3e3;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.folder-icon {
+  margin-right: 10px;
+}
+
+.no-folders {
+  color: #777;
+  font-style: italic;
 }

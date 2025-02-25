@@ -1,1 +1,16 @@
-<p>sidebar works!</p>
+<div class="sidebar-container">
+    <h3>Folders</h3>
+  
+    <!-- ✅ Display Folders Dynamically -->
+    <ul *ngIf="folders.length > 0; else noFolders" class="folder-list">
+      <li *ngFor="let folder of folders">
+        <span class="folder-icon">📁</span> {{ folder.title }}
+      </li>
+    </ul>
+  
+    <!-- ✅ Fallback if No Folders Exist -->
+    <ng-template #noFolders>
+      <p>No folders available.</p>
+    </ng-template>
+  </div>
+  
