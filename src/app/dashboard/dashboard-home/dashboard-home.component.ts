@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../layout/header/header.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
@@ -19,12 +20,24 @@ import { FooterComponent } from '../../layout/footer/footer.component';
   ]
 })
 export class DashboardHomeComponent implements OnInit {
-  folders: any[] = []; // ✅ Store folders for sidebar
+  folders: any[] = [];
+  activeFolderId: string | null = null;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.fetchFolders(); // ✅ Fetch folders immediately after login
+    this.route.queryParams.subscribe((params) => {
+      if (params['folder']) {
+        this.activeFolderId = params['folder'];
+      }
+    });
+
+    this.fetchFolders();
   }
 
   fetchFolders() {
@@ -38,8 +51,14 @@ export class DashboardHomeComponent implements OnInit {
 
     this.http.get<any>('https://weavadev1.azurewebsites.net/folders', { headers }).subscribe(
       (response) => {
-        if (response.statusCode === 200 && response.folderList) {
-          this.folders = response.folderList; // ✅ Extract folderList from response
+        if (response.statusCode === 200 && response.folderList.length > 0) {
+          this.folders = response.folderList;
+
+          // ✅ If no folder is active, set the first one and update the URL
+          if (!this.activeFolderId) {
+            this.setActiveFolder(this.folders[0].folderId);
+          }
+
           console.log('Folders fetched successfully:', this.folders);
         } else {
           console.error('Unexpected API response:', response);
@@ -49,5 +68,11 @@ export class DashboardHomeComponent implements OnInit {
         console.error('Error fetching folders:', error);
       }
     );
+  }
+
+  // ✅ Set Active Folder and Update URL
+  setActiveFolder(folderId: string) {
+    this.activeFolderId = folderId;
+    this.router.navigate([], { queryParams: { folder: folderId }, queryParamsHandling: 'merge' });
   }
 }

@@ -1,13 +1,19 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common'; // ✅ Import CommonModule
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
-  imports: [CommonModule] // ✅ Add CommonModule to imports
+  imports: [CommonModule]
 })
 export class SidebarComponent {
-  @Input() folders: any[] = []; // ✅ Receive folders from Dashboard
+  @Input() folders: any[] = [];
+  @Input() activeFolderId: string | null = null;
+  @Output() folderSelected = new EventEmitter<string>();
+
+  setFolder(folderId: string) {
+    this.folderSelected.emit(folderId);
+  }
 }
