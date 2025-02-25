@@ -13,7 +13,7 @@ import { FooterComponent } from '../../layout/footer/footer.component';
   templateUrl: './dashboard-home.component.html',
   styleUrls: ['./dashboard-home.component.css'],
   imports: [
-    CommonModule, // ✅ Required for *ngIf and other directives
+    CommonModule,
     FooterComponent,
     HeaderComponent,
     SidebarComponent
@@ -22,6 +22,7 @@ import { FooterComponent } from '../../layout/footer/footer.component';
 export class DashboardHomeComponent implements OnInit {
   folders: any[] = [];
   activeFolderId: string | null = null;
+  activeFolderName: string = 'No Folder Selected'; // ✅ Default folder name
 
   constructor(
     private http: HttpClient,
@@ -34,6 +35,7 @@ export class DashboardHomeComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if (params['folder']) {
         this.activeFolderId = params['folder'];
+        this.updateActiveFolderName();
       }
     });
 
@@ -54,9 +56,11 @@ export class DashboardHomeComponent implements OnInit {
         if (response.statusCode === 200 && response.folderList.length > 0) {
           this.folders = response.folderList;
 
-          // ✅ If no folder is active, set the first one and update the URL
+          // ✅ If no folder is active, set the first one
           if (!this.activeFolderId) {
             this.setActiveFolder(this.folders[0].folderId);
+          } else {
+            this.updateActiveFolderName();
           }
 
           console.log('Folders fetched successfully:', this.folders);
@@ -73,6 +77,13 @@ export class DashboardHomeComponent implements OnInit {
   // ✅ Set Active Folder and Update URL
   setActiveFolder(folderId: string) {
     this.activeFolderId = folderId;
+    this.updateActiveFolderName();
     this.router.navigate([], { queryParams: { folder: folderId }, queryParamsHandling: 'merge' });
+  }
+
+  // ✅ Update Active Folder Name
+  updateActiveFolderName() {
+    const activeFolder = this.folders.find(folder => folder.folderId === this.activeFolderId);
+    this.activeFolderName = activeFolder ? activeFolder.title : 'No Folder Selected';
   }
 }

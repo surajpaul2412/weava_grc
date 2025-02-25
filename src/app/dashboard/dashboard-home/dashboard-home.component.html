@@ -6,11 +6,11 @@
 
   <!-- Main Dashboard (75% width) -->
   <div class="dashboard-main">
-    <app-header></app-header> <!-- ✅ Header inside dashboard -->
+    <app-header [activeFolderName]="activeFolderName"></app-header> <!-- ✅ Pass folder name to header -->
 
     <div class="dashboard-content">
       <h2>Dashboard</h2>
-      <p>Active Folder: {{ activeFolderId }}</p>
+      <p>Active Folder: {{ activeFolderName }}</p>
     </div>
 
     <app-footer></app-footer> <!-- ✅ Footer inside dashboard -->
