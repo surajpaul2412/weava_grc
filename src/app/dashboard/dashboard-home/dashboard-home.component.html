@@ -10,7 +10,26 @@
 
     <div class="dashboard-content">
       <h2>Dashboard</h2>
-      <p>Active Folder: {{ activeFolderName }}</p>
+      <p><strong>Active Folder:</strong> {{ activeFolderName }}</p>
+
+      <!-- ✅ Show Folder Details -->
+      <div *ngIf="folderDetails; else noDetails">
+        <h3>Folder Details</h3>
+        <p><strong>Title:</strong> {{ folderDetails.title }}</p>
+        <p><strong>Created By:</strong> {{ folderDetails.creator }}</p>
+        <p><strong>Created At:</strong> {{ folderDetails.createDate | date:'medium' }}</p>
+
+        <!-- ✅ Display Subfolders if available -->
+        <h4 *ngIf="folderDetails.subfolders?.length > 0">Subfolders</h4>
+        <ul *ngIf="folderDetails.subfolders?.length > 0">
+          <li *ngFor="let subfolder of folderDetails.subfolders">{{ subfolder.title }}</li>
+        </ul>
+      </div>
+
+      <!-- ✅ Fallback if No Folder Details Exist -->
+      <ng-template #noDetails>
+        <p>No folder details available.</p>
+      </ng-template>
     </div>
 
     <app-footer></app-footer> <!-- ✅ Footer inside dashboard -->

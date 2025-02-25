@@ -22,7 +22,8 @@ import { FooterComponent } from '../../layout/footer/footer.component';
 export class DashboardHomeComponent implements OnInit {
   folders: any[] = [];
   activeFolderId: string | null = null;
-  activeFolderName: string = 'No Folder Selected'; // ✅ Default folder name
+  activeFolderName: string = 'No Folder Selected';
+  folderDetails: any = null; // ✅ Store folder details
 
   constructor(
     private http: HttpClient,
@@ -33,9 +34,13 @@ export class DashboardHomeComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      if (params['folder']) {
-        this.activeFolderId = params['folder'];
-        this.updateActiveFolderName();
+      const folderId = params['folder'] || null;
+      this.activeFolderId = folderId;
+      this.updateActiveFolderName();
+
+      // ✅ Fetch details only if folders are already loaded
+      if (this.folders.length > 0 && this.activeFolderId) {
+        this.fetchFolderDetails(this.activeFolderId);
       }
     });
 
@@ -56,34 +61,69 @@ export class DashboardHomeComponent implements OnInit {
         if (response.statusCode === 200 && response.folderList.length > 0) {
           this.folders = response.folderList;
 
-          // ✅ If no folder is active, set the first one
           if (!this.activeFolderId) {
-            this.setActiveFolder(this.folders[0].folderId);
+            // ✅ If no folderId is in the URL, set the first folder as active
+            this.setActiveFolder(this.folders[0].folderId, true);
           } else {
             this.updateActiveFolderName();
+            this.fetchFolderDetails(this.activeFolderId); // ✅ Fetch details when folders load
           }
 
-          console.log('Folders fetched successfully:', this.folders);
+          console.log('✅ Folders fetched successfully:', this.folders);
         } else {
-          console.error('Unexpected API response:', response);
+          console.error('🚨 Unexpected API response:', response);
         }
       },
       (error) => {
-        console.error('Error fetching folders:', error);
+        console.error('❌ Error fetching folders:', error);
       }
     );
   }
 
   // ✅ Set Active Folder and Update URL
-  setActiveFolder(folderId: string) {
+  setActiveFolder(folderId: string | null, isInitialLoad = false) {
+    if (!folderId) return;
+
     this.activeFolderId = folderId;
     this.updateActiveFolderName();
-    this.router.navigate([], { queryParams: { folder: folderId }, queryParamsHandling: 'merge' });
+    this.fetchFolderDetails(folderId);
+
+    // ✅ Update the URL only if this is not an initial load from fetchFolders
+    if (!isInitialLoad) {
+      this.router.navigate([], { queryParams: { folder: folderId }, queryParamsHandling: 'merge' });
+    }
   }
 
   // ✅ Update Active Folder Name
   updateActiveFolderName() {
     const activeFolder = this.folders.find(folder => folder.folderId === this.activeFolderId);
     this.activeFolderName = activeFolder ? activeFolder.title : 'No Folder Selected';
+  }
+
+  // ✅ Fetch Folder Details
+  fetchFolderDetails(folderId: string | null) {
+    if (!folderId) return;
+
+    const user = this.authService.getUser();
+    if (!user || !user.authToken) {
+      console.error('🚨 No token found, unable to fetch folder details.');
+      return;
+    }
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${user.authToken}`);
+
+    this.http.get<any>(`https://weavadev1.azurewebsites.net/folders/${folderId}`, { headers }).subscribe(
+      (response) => {
+        if (response.statusCode === 200) {
+          this.folderDetails = response.folderDetails;
+          console.log('✅ Folder details fetched successfully:', this.folderDetails);
+        } else {
+          console.error('🚨 Unexpected API response:', response);
+        }
+      },
+      (error) => {
+        console.error('❌ Error fetching folder details:', error);
+      }
+    );
   }
 }
