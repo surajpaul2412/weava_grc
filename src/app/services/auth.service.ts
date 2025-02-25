@@ -41,6 +41,21 @@ export class AuthService {
     );
   }
 
+  // ✅ Call API for signup
+  signup(userData: { email: string; password: string; firstName: string; lastName: string }): Observable<HttpResponse<any>> {
+    return this.http.post<any>(`${this.apiUrl}/auth/signup`, userData, { observe: 'response' }).pipe(
+      tap((response) => {
+        if (response.body?.authToken) { // ✅ Ensure token exists
+          localStorage.setItem('user', JSON.stringify(response.body)); // ✅ Store user data
+          this.userSubject.next(response.body); // ✅ Update auth state
+        }
+      }),
+      catchError((error) => {
+        throw error; // ✅ Let the component handle errors
+      })
+    );
+  }
+
   logout() {
     localStorage.removeItem('user'); // ✅ Clear storage on logout
     this.userSubject.next(null);
