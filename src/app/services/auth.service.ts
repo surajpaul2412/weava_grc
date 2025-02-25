@@ -1,16 +1,20 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private userSubject = new BehaviorSubject<any>(null);
+  private apiUrl = environment.apiBaseUrl; // ✅ Use API Base URL from environment
 
-  constructor() {
+  constructor(private http: HttpClient) {
     const user = localStorage.getItem('user');
     if (user) {
-      this.userSubject.next(JSON.parse(user));
+      this.userSubject.next(JSON.parse(user)); // ✅ Load user from storage on app start
     }
   }
 
@@ -18,26 +22,27 @@ export class AuthService {
     return this.userSubject.asObservable();
   }
 
-  login(credentials: { email: string; password: string }): Observable<any> { // ✅ Return Observable
-    const userData = {
-      status: 200,
-      message: 'Login successful',
-      data: {
-        token: 'dummy-token',
-        user: {
-          email: credentials.email,
-          name: 'John Doe'
-        }
-      }
-    };
+  getUser() {
+    return this.userSubject.value;
+  }
 
-    localStorage.setItem('user', JSON.stringify(userData.data));
-    this.userSubject.next(userData.data); // ✅ Update observable on login
-    return of(userData); // ✅ Simulate API response as Observable
+  // ✅ Call API for login
+  login(credentials: { email: string; password: string }): Observable<HttpResponse<any>> {
+    return this.http.post<any>(`${this.apiUrl}/auth/login`, credentials, { observe: 'response' }).pipe(
+      tap(response => {
+        if (response.body?.authToken) { // ✅ Ensure token exists
+          localStorage.setItem('user', JSON.stringify(response.body)); // ✅ Store user data
+          this.userSubject.next(response.body); // ✅ Update auth state
+        }
+      }),
+      catchError(error => {
+        throw error; // ✅ Let the component handle errors
+      })
+    );
   }
 
   logout() {
-    localStorage.removeItem('user');
+    localStorage.removeItem('user'); // ✅ Clear storage on logout
     this.userSubject.next(null);
   }
 }
