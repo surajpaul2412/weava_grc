@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // ✅ Import FormsModule
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -39,14 +39,22 @@ export class LoginComponent {
 
     const credentials = { email: this.email, password: this.password };
 
-    this.authService.login(credentials).subscribe(response => {
-      if (response.status === 200) {
-        this.showToast('Login successfully', 'success');
-        this.router.navigate(['/dashboard']); // ✅ Redirect to Dashboard
-      } else {
-        this.showToast(response.message || 'Login failed', 'error');
+    this.authService.login(credentials).subscribe(
+      (response) => {
+        console.log('Login Response:', response);
+
+        if (response.body?.authToken) { // ✅ Check for token
+          this.showToast('Login successfully', 'success');
+          this.router.navigate(['/dashboard']); // ✅ Redirect to Dashboard
+        } else {
+          this.showToast('Invalid credentials. Please try again.', 'error');
+        }
+      },
+      (error) => {
+        this.showToast(error.error?.message || 'Login failed. Please check your credentials.', 'error');
+        console.error('Login failed:', error);
       }
-    });
+    );
   }
 
   showToast(message: string, type: 'success' | 'error') {
