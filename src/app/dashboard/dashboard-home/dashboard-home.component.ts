@@ -62,11 +62,12 @@ export class DashboardHomeComponent implements OnInit {
           this.folders = response.folderList;
 
           if (!this.activeFolderId) {
-            // ✅ If no folderId is in the URL, set the first folder as active
-            this.setActiveFolder(this.folders[0].folderId, true);
+            // ✅ Set the first folder as active and update the URL
+            const firstFolderId = this.folders[0].folderId;
+            this.setActiveFolder(firstFolderId, false); // ✅ Ensure URL reflects change
           } else {
             this.updateActiveFolderName();
-            this.fetchFolderDetails(this.activeFolderId); // ✅ Fetch details when folders load
+            this.fetchFolderDetails(this.activeFolderId);
           }
 
           console.log('✅ Folders fetched successfully:', this.folders);
@@ -88,10 +89,8 @@ export class DashboardHomeComponent implements OnInit {
     this.updateActiveFolderName();
     this.fetchFolderDetails(folderId);
 
-    // ✅ Update the URL only if this is not an initial load from fetchFolders
-    if (!isInitialLoad) {
-      this.router.navigate([], { queryParams: { folder: folderId }, queryParamsHandling: 'merge' });
-    }
+    // ✅ Ensure the URL is updated correctly when setting the first folder
+    this.router.navigate([], { queryParams: { folder: folderId }, queryParamsHandling: 'merge' });
   }
 
   // ✅ Update Active Folder Name
