@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { faUser } from '@fortawesome/free-solid-svg-icons'; // Import the required icon
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // ✅ Import Angular Material Modules
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,7 +20,8 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule, // ✅ Required for [(ngModel)]
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    FontAwesomeModule
   ]
 })
 export class LoginComponent {
