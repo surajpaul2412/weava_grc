@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../layout/header/header.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -16,7 +17,8 @@ import { FooterComponent } from '../../layout/footer/footer.component';
     CommonModule,
     FooterComponent,
     HeaderComponent,
-    SidebarComponent
+    SidebarComponent,
+    NgxExtendedPdfViewerModule
   ]
 })
 export class DashboardHomeComponent implements OnInit {
