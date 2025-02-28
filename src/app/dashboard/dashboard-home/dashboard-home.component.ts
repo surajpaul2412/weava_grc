@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,7 +21,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     NgxExtendedPdfViewerModule
   ]
 })
-export class DashboardHomeComponent implements OnInit {
+export class DashboardHomeComponent implements OnInit, AfterViewInit {
   folders: any[] = [];
   activeFolderId: string | null = null;
   activeFolderName: string = 'No Folder Selected';
@@ -47,6 +47,22 @@ export class DashboardHomeComponent implements OnInit {
     });
 
     this.fetchFolders();
+  }
+
+  // ✅ Runs after the view is initialized
+  ngAfterViewInit(): void {
+    const pdfContainer = document.getElementById('pdf-container');
+    if (pdfContainer) {
+      pdfContainer.addEventListener('mouseup', this.logSelectedText);
+    }
+  }
+
+  // ✅ Detect selected text inside PDF
+  logSelectedText(): void {
+    const selectedText = window.getSelection()?.toString().trim();
+    if (selectedText) {
+      console.log("Selected text:", selectedText);
+    }
   }
 
   fetchFolders() {

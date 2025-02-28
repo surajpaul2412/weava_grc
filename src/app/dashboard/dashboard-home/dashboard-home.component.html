@@ -31,25 +31,27 @@
         <p>No folder details available.</p>
       </ng-template>
 
-      
-      <ngx-extended-pdf-viewer
-  [src]="'https://tourism.gov.in/sites/default/files/2019-04/dummy-pdf_2.pdf'"
-  useBrowserLocale="true"
-  [showToolbar]="true"
-  [showSidebarButton]="true"
-  [showDownloadButton]="true"
-  [showPrintButton]="true"
-  [showOpenFileButton]="true"
-  [showPresentationModeButton]="true"
-  [showSecondaryToolbarButton]="true"
-  [showHandToolButton]="true"
-  [showFindButton]="true"
-  [showPagingButtons]="true"
-  [showZoomButtons]="true"
-  [showSpreadButton]="true"
-  [handTool]="false"
-  height="100vh">
-</ngx-extended-pdf-viewer>
+      <div id="pdf-container">
+        <ngx-extended-pdf-viewer
+          [src]="'https://tourism.gov.in/sites/default/files/2019-04/dummy-pdf_2.pdf'"
+          useBrowserLocale="true"
+          showBookmarkButton="true"
+          [showToolbar]="true"
+          [showSidebarButton]="true"
+          [showDownloadButton]="true"
+          [showPrintButton]="true"
+          [showOpenFileButton]="true"
+          [showPresentationModeButton]="true"
+          [showSecondaryToolbarButton]="true"
+          [showHandToolButton]="true"
+          [showFindButton]="true"
+          [showPagingButtons]="true"
+          [showZoomButtons]="true"
+          [showSpreadButton]="true"
+          [handTool]="false"
+          height="100vh">
+        </ngx-extended-pdf-viewer>
+      </div>
 
 
     </div>
