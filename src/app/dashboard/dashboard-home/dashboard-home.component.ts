@@ -26,6 +26,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   activeFolderId: string | null = null;
   activeFolderName: string = 'No Folder Selected';
   folderDetails: any = null; // ✅ Store folder details
+  selectedTab: string = 'overview';
 
   constructor(
     private http: HttpClient,
@@ -47,6 +48,10 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     });
 
     this.fetchFolders();
+  }
+
+  switchTab(tab: string) {
+    this.selectedTab = tab;
   }
 
   // ✅ Runs after the view is initialized

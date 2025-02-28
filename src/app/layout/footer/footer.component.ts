@@ -7,9 +7,9 @@ import { Component, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent {
-  @Output() tabChanged = new EventEmitter<string>();
+  @Output() tabChange = new EventEmitter<string>();
 
   changeTab(tab: string) {
-    this.tabChanged.emit(tab);
+    this.tabChange.emit(tab);
   }
 }
