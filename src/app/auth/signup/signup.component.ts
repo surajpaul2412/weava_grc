@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 // ✅ Import Angular Material Modules
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +16,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterModule]
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterModule, FontAwesomeModule]
 })
 export class SignupComponent {
   firstName = '';

@@ -38,7 +38,7 @@
         <p>Additional details can go here...</p>
       </div>
 
-      <!-- <div id="pdf-container" *ngIf="selectedTab === 'overview'">
+      <div id="pdf-container" *ngIf="selectedTab === 'overview'">
         <ngx-extended-pdf-viewer
           [src]="'https://tourism.gov.in/sites/default/files/2019-04/dummy-pdf_2.pdf'"
           useBrowserLocale="true"
@@ -58,7 +58,8 @@
           [handTool]="false"
           height="100vh">
         </ngx-extended-pdf-viewer>
-      </div> -->
+      </div>
+      
     </div>
 
     <app-footer (tabChange)="switchTab($event)"></app-footer>
