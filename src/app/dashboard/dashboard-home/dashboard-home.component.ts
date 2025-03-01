@@ -7,6 +7,7 @@ import { HeaderComponent } from '../../layout/header/header.component';
 import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -18,7 +19,8 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     FooterComponent,
     HeaderComponent,
     SidebarComponent,
-    NgxExtendedPdfViewerModule
+    NgxExtendedPdfViewerModule,
+    FontAwesomeModule
   ]
 })
 export class DashboardHomeComponent implements OnInit, AfterViewInit {
