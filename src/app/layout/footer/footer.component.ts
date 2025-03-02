@@ -8,8 +8,10 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class FooterComponent {
   @Output() tabChange = new EventEmitter<string>();
+  selectedTab: string = 'highlights'; 
 
   changeTab(tab: string) {
     this.tabChange.emit(tab);
+    this.selectedTab = tab;
   }
 }
