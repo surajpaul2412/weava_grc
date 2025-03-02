@@ -8,6 +8,8 @@ import { SidebarComponent } from '../../layout/sidebar/sidebar.component';
 import { FooterComponent } from '../../layout/footer/footer.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgModule } from '@angular/core';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -20,7 +22,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     HeaderComponent,
     SidebarComponent,
     NgxExtendedPdfViewerModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    NgbModule
   ]
 })
 export class DashboardHomeComponent implements OnInit, AfterViewInit {
@@ -30,6 +33,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   folderDetails: any = null; // ✅ Store folder details
   selectedTab: string = 'highlights';
   PdfView: boolean = false;
+  alertVisible: boolean = true;
 
   constructor(
     private http: HttpClient,
@@ -63,6 +67,10 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   hidePdfView() {
     this.PdfView = false;
+  }
+
+  closeAlert() {
+    this.alertVisible = false;
   }
 
   // ✅ Runs after the view is initialized
