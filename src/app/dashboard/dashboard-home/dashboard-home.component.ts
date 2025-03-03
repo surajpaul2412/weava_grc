@@ -49,9 +49,9 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       this.updateActiveFolderName();
 
       // ✅ Fetch details only if folders are already loaded
-      if (this.folders.length > 0 && this.activeFolderId) {
-        this.fetchFolderDetails(this.activeFolderId);
-      }
+      // if (this.folders.length > 0 && this.activeFolderId) {
+      //   this.fetchFolderDetails(this.activeFolderId);
+      // }
     });
 
     this.fetchFolders();
@@ -109,7 +109,11 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
             this.setActiveFolder(firstFolderId, false); // ✅ Ensure URL reflects change
           } else {
             this.updateActiveFolderName();
-            this.fetchFolderDetails(this.activeFolderId);
+
+            // ✅ Prevent double calls
+            if (!this.folderDetails || this.folderDetails.folderId !== this.activeFolderId) {
+              this.fetchFolderDetails(this.activeFolderId);
+            }
           }
 
           console.log('✅ Folders fetched successfully:', this.folders);
@@ -127,7 +131,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   setActiveFolder(folderId: string | null, isInitialLoad = false) {
     if (!folderId) return;
 
-    this.activeFolderId = folderId;
+    this.activeFolderId = folderId;    
     this.updateActiveFolderName();
     this.fetchFolderDetails(folderId);
 
@@ -137,9 +141,18 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   // ✅ Update Active Folder Name
   updateActiveFolderName() {
-    const activeFolder = this.folders.find(folder => folder.folderId === this.activeFolderId);
+    let activeFolder = this.folders.find((folder: any) => folder.folderId === this.activeFolderId);
+
+    if (!activeFolder) {
+        // If not found in top-level folders, search in subfolders
+        for (const folder of this.folders) {
+            activeFolder = folder.subfolders?.find((subfolder: any) => subfolder.folderId === this.activeFolderId);
+            if (activeFolder) break; // Stop searching if found
+        }
+    }
+
     this.activeFolderName = activeFolder ? activeFolder.title : 'No Folder Selected';
-  }
+}
 
   // ✅ Fetch Folder Details
   fetchFolderDetails(folderId: string | null) {
