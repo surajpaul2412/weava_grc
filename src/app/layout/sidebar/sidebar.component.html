@@ -34,7 +34,6 @@
             <li
               _ngcontent-wat-c46=""
               *ngFor="let folder of folders"
-              (click)="setFolder(folder.folderId, $event)"
             >
               <div
                 class="suraj app-folder"
@@ -121,7 +120,8 @@
                         </div>
                       </ng-template>
 
-                      <div _ngcontent-wat-c47="" class="folder-contents">
+                      <div _ngcontent-wat-c47="" class="folder-contents" 
+                      (click)="setFolder(folder.folderId, $event)">
                         <div
                           _ngcontent-wat-c47=""
                           class="folder-icons folder-icon-folder"
@@ -290,7 +290,6 @@
                           <li
                             _ngcontent-wat-c46=""
                             *ngFor="let subfolder of folder.subfolders"
-                            (click)="setFolder(subfolder.folderId, $event)"
                           >
                             <div
                               class="suraj app-folder"
@@ -337,6 +336,7 @@
                                     <div
                                       _ngcontent-wat-c47=""
                                       class="folder-contents"
+                                      (click)="setFolder(subfolder.folderId, $event)"
                                     >
                                       <div
                                         _ngcontent-wat-c47=""
