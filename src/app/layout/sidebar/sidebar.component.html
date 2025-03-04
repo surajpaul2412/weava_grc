@@ -526,6 +526,7 @@
           _ngcontent-wat-c65=""
           novalidate=""
           class="ng-untouched ng-pristine ng-valid"
+          [formGroup]="createFolderForm" (ngSubmit)="createFolder()"
         >
           <div _ngcontent-wat-c65="" class="create-folder-wrapper">
             <button
@@ -556,7 +557,7 @@
             <input
               _ngcontent-wat-c65=""
               id="create-folder"
-              formcontrolname="title"
+              formControlName="title"
               type="text"
               placeholder="Enter folder title..."
               class="create-folder-input ng-untouched ng-pristine ng-valid"
@@ -641,6 +642,7 @@
             <button
               _ngcontent-wat-c45=""
               class="user-account-signout-button text-button"
+              (click)="signout()"
             >
               Sign Out
             </button>
