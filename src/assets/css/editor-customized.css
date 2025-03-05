@@ -437,9 +437,9 @@ input:checked+.toggle:before {
     background-color: rgba(0,0,0,.05)
 }
 
-.nav-modal-body:active {
+/* .nav-modal-body:active {
     background-color: rgba(0,0,0,.2)
-}
+} */
 
 .nav-modal-body.disabled:active,.nav-modal-body.disabled:hover {
     background-color: #fff;

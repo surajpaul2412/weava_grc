@@ -179,4 +179,19 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  // ✅ Function to log uploaded file(s) to console
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    console.log('📂 Selected Files:', input.files);
+    
+    // ✅ Log each file separately
+    for (let i = 0; i < input.files.length; i++) {
+      console.log(`File ${i + 1}:`, input.files[i].name);
+    }
+
+    input.value = ''; // ✅ Reset file input after selection (optional)
+  }
 }

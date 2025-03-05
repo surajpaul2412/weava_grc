@@ -30,7 +30,7 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserData();
-    this.refreshFolders();
+    // this.refreshFolders();
   }
 
   loadUserData() {

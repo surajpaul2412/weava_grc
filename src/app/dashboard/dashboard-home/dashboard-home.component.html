@@ -487,8 +487,8 @@
                                     <!-- upload files -->
                                     <div _ngcontent-wat-c93="" class="website-list-bottom-button-wrapper">
                                         <label _ngcontent-wat-c93="" for="upload-pdf-website-list-button" class="website-list-bottom-button-group">
-                                            <form _ngcontent-wat-c93="" novalidate="" enctype="multipart/form-data" method="post"><input _ngcontent-wat-c93="" appuploadpdfbutton="" accept=".pdf" id="upload-pdf-website-list-button" type="file" multiple="" style="display: none;"></form>
-                                            <div _ngcontent-wat-c93="" class="website-list-bottom-button-hint"> Highlight PDF <br _ngcontent-wat-c93=""> from my computer: </div>
+                                            <form _ngcontent-wat-c93="" novalidate enctype="multipart/form-data" method="post"><input _ngcontent-wat-c93="" appuploadpdfbutton accept=".pdf" id="upload-pdf-website-list-button" type="file" (change)="onFileSelected($event)" multiple style="display: none;"></form>
+                                            <div _ngcontent-wat-c93="" class="website-list-bottom-button-hint"> Highlight PDF <br/> from my computer: </div>
                                             <div _ngcontent-wat-c93="" id="uploadTrigger" class="text-button secondary-text-button upload-trigger">
                                                 <img _ngcontent-wat-c93="" src="https://www.weavatools.com/app/assets/images/svg/upload-icon.svg" class="upload-icon">
                                                 <div _ngcontent-wat-c93="" style="display: inline-block; vertical-align: middle; padding-left: 4px;">Upload PDFs</div>
