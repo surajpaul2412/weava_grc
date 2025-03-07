@@ -9,6 +9,7 @@ import { FooterComponent } from '../../layout/footer/footer.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AzureBlobService } from '../../services/azure-blob.service'; // ✅ Import Service
 
 @Component({
   selector: 'app-dashboard-home',
@@ -38,7 +39,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     private http: HttpClient,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private azureBlobService: AzureBlobService
   ) {}
 
   ngOnInit() {
@@ -181,17 +183,24 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   }
 
   // ✅ Function to log uploaded file(s) to console
-  onFileSelected(event: Event) {
+  async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
-
-    console.log('📂 Selected Files:', input.files);
-    
-    // ✅ Log each file separately
-    for (let i = 0; i < input.files.length; i++) {
-      console.log(`File ${i + 1}:`, input.files[i].name);
+    if (!input.files || input.files.length === 0) {
+      console.error("🚨 No file selected!");
+      return;
     }
 
-    input.value = ''; // ✅ Reset file input after selection (optional)
+    const file = input.files[0]; // Get the first selected file
+    console.log("📂 Selected file:", file.name);
+
+    const isUploaded = await this.azureBlobService.uploadFile(file);
+
+    if (isUploaded) {
+      alert("✅ File uploaded successfully!");
+    } else {
+      alert("❌ File upload failed.");
+    }
+
+    input.value = ''; // Reset file input after upload
   }
 }
