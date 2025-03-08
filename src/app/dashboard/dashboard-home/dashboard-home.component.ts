@@ -34,6 +34,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   selectedTab: string = 'highlights';
   PdfView: boolean = false;
   alertVisible: boolean = true;
+  uploadProgress: any = 0;
 
   constructor(
     private http: HttpClient,
@@ -189,18 +190,39 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       console.error("🚨 No file selected!");
       return;
     }
-
-    const file = input.files[0]; // Get the first selected file
-    console.log("📂 Selected file:", file.name);
-
-    const isUploaded = await this.azureBlobService.uploadFile(file);
-
-    if (isUploaded) {
-      alert("✅ File uploaded successfully!");
-    } else {
-      alert("❌ File upload failed.");
+  
+    if (!this.activeFolderId) {
+      console.error("❌ No active folder ID found!");
+      return;
     }
-
-    input.value = ''; // Reset file input after upload
+  
+    const files = Array.from(input.files);
+    let uploadedCount = 0;
+    const totalFiles = files.length;
+    this.uploadProgress = `0/${totalFiles}`;
+  
+    for (const file of files) {
+      console.log("📂 Uploading file:", file.name);
+  
+      try {
+        const isUploaded = await this.azureBlobService.uploadFile(file, this.activeFolderId);
+        if (isUploaded) {
+          uploadedCount++;
+          this.uploadProgress = `${uploadedCount}/${totalFiles}`;
+          console.log(`✅ File uploaded successfully: ${file.name}`);
+        } else {
+          console.error(`❌ File upload failed: ${file.name}`);
+        }
+  
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error(`🚨 Error uploading file ${file.name}:`, error);
+      }
+    }
+  
+    this.uploadProgress = `Completed: ${uploadedCount}/${totalFiles}`;
+    input.value = '';
+    this.fetchFolderDetails(this.activeFolderId);
   }
+  
 }

@@ -123,6 +123,9 @@
                         
                         <div *ngIf="selectedTab === 'highlights'" _ngcontent-wat-c61="" class="main-panel-list" _nghost-wat-c96="">
                             <section _ngcontent-wat-c96="" class="website-list-wrapper">
+    
+<div *ngIf="uploadProgress">{{ uploadProgress }}</div>
+
                                 <!-- folder in detail -->
                                 <div _ngcontent-wat-c96="" _nghost-wat-c94="">
                                     <div _ngcontent-wat-c94="" class="folder-card-list" *ngFor="let subFolder of folderDetails.subfolders">
