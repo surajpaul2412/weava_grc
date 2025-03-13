@@ -35,6 +35,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   PdfView: boolean = false;
   alertVisible: boolean = true;
   uploadProgress: any = 0;
+  selectedText: string = '';
 
   constructor(
     private http: HttpClient,
@@ -65,10 +66,14 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   showPdfView() {
     this.PdfView = true;
+    setTimeout(() => {
+      this.addTextSelectionListener(); // ✅ Add text selection event listener
+    }, 1000);
   }
 
   hidePdfView() {
     this.PdfView = false;
+    this.removeTextSelectionListener(); // ✅ Remove text selection event listener
   }
 
   closeAlert() {
@@ -77,19 +82,30 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
 
   // ✅ Runs after the view is initialized
   ngAfterViewInit(): void {
-    const pdfContainer = document.getElementById('pdf-container');
-    if (pdfContainer) {
-      pdfContainer.addEventListener('mouseup', this.logSelectedText);
-    }
+    this.addTextSelectionListener();
   }
 
-  // ✅ Detect selected text inside PDF
-  logSelectedText(): void {
+  ngOnDestroy(): void {
+    this.removeTextSelectionListener(); // ✅ Clean up event listener on destroy
+  }
+
+  // ✅ Add Event Listener for Text Selection
+  addTextSelectionListener() {
+    document.addEventListener('mouseup', this.logSelectedText);
+  }
+
+  // ✅ Remove Event Listener when closing PDF
+  removeTextSelectionListener() {
+    document.removeEventListener('mouseup', this.logSelectedText);
+  }
+
+  // ✅ Function to Capture Selected Text
+  logSelectedText = () => {
     const selectedText = window.getSelection()?.toString().trim();
     if (selectedText) {
-      console.log("Selected text:", selectedText);
+      console.log("📝 Selected Text:", selectedText);
     }
-  }
+  };
 
   fetchFolders() {
     const user = this.authService.getUser();
@@ -219,8 +235,13 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
         console.error(`🚨 Error uploading file ${file.name}:`, error);
       }
     }
-  
+
     this.uploadProgress = `Completed: ${uploadedCount}/${totalFiles}`;
+    // ✅ Hide progress after 2 seconds
+    setTimeout(() => {
+      this.uploadProgress = '';
+    }, 2000);
+  
     input.value = '';
     this.fetchFolderDetails(this.activeFolderId);
   }
