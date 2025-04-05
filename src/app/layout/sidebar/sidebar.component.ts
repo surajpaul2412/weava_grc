@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component'; // Import the confirmation dialog
 
 @Component({
   selector: 'app-sidebar',
@@ -24,7 +26,7 @@ export class SidebarComponent implements OnInit {
   dimBG: boolean = false;
   userName: string | null = null;
 
-  constructor(private router: Router, private http: HttpClient, private fb: FormBuilder, private snackBar: MatSnackBar) {
+  constructor(private router: Router, private http: HttpClient, private dialog: MatDialog, private fb: FormBuilder, private snackBar: MatSnackBar) {
     this.createFolderForm = this.fb.group({ title: ['', Validators.required] });
   }
 
@@ -93,6 +95,53 @@ export class SidebarComponent implements OnInit {
         this.showToast('Folder created successfully', 'success');
       },
       error => console.error('❌ Error creating folder:', error)
+    );
+  }
+
+  deleteFolder(folderId: string, folderName: string) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { folderName: folderName } // Pass the folder name to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Proceed with folder deletion if user confirms
+        this.deleteFolderApiCall(folderId);
+      } else {
+        // User cancelled the deletion, do nothing
+        console.log('Folder deletion cancelled');
+      }
+    });
+  }
+
+  deleteFolderApiCall(folderId: string) {
+    const user = localStorage.getItem('user');
+    if (!user) return console.error('User not found in localStorage');
+
+    const parsedUser = JSON.parse(user);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
+
+    this.http.delete(`https://weavadev1.azurewebsites.net/folders/${folderId}`, { headers }).subscribe(
+      (response) => {
+        // Display success message
+        this.showToast('Folder deleted successfully', 'success');
+        this.refreshFolders();
+
+        // If the active folder was deleted, navigate to another folder or the first folder
+        if (this.activeFolderId === folderId) {
+          if (this.folders.length > 0) {
+            // Set the first folder as active
+            this.activeFolderId = this.folders[0].folderId;
+          } else {
+            // If no folders remain, navigate to the homepage or a default page
+            this.router.navigate(['/']);
+          }
+        }
+      },
+      (error) => {
+        console.error('❌ Error deleting folder:', error);
+        this.showToast('Error deleting folder', 'error');
+      }
     );
   }
 

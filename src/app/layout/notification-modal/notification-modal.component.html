@@ -1,1 +1,46 @@
-<p>notification-modal works!</p>
+<div class="modal-body">
+    <!-- Tabs Section -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 0" (click)="setActiveTab(0)" href="javascript:void(0)">All
+                <span *ngIf="!isLoadingAll" class="badge badge-pill badge-secondary">
+                    {{ notifications.length || 0 }}
+                </span>
+                <span *ngIf="isLoadingAll" class="spinner-border spinner-border-sm"></span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" [class.active]="activeTab === 1" (click)="setActiveTab(1)"
+                href="javascript:void(0)">Invitation to Collaborate
+                <span *ngIf="!isLoadingInvitations" class="badge badge-pill badge-secondary">
+                    {{ invitations.length || 0 }}
+                </span>
+                <span *ngIf="isLoadingInvitations" class="spinner-border spinner-border-sm"></span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Content Section based on Active Tab -->
+    <div class="tab-content mt-3">
+        <div *ngIf="activeTab === 0" class="tab-pane fade show active">
+            <h6>All Notifications</h6>
+            <p *ngIf="notifications.length === 0 && !isLoadingAll">No new notifications at the moment.</p>
+            <div *ngIf="isLoadingAll" class="text-center">
+                <div class="spinner-border"></div>
+            </div>
+            <ul>
+                <li *ngFor="let notification of notifications">{{ notification.message }}</li>
+            </ul>
+        </div>
+        <div *ngIf="activeTab === 1" class="tab-pane fade show active">
+            <h6>Invitation to Collaborate</h6>
+            <p *ngIf="invitations.length === 0 && !isLoadingInvitations">No new invitations!</p>
+            <div *ngIf="isLoadingInvitations" class="text-center">
+                <div class="spinner-border"></div>
+            </div>
+            <ul>
+                <li *ngFor="let invitation of invitations">{{ invitation.message }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
