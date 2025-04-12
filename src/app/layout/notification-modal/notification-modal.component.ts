@@ -1,73 +1,99 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { HttpClient } from '@angular/common/http'; // Import HttpClient
-import { CommonModule } from '@angular/common'; // Import CommonModule
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-notification-modal',
   standalone: true,
-  imports: [CommonModule], // Import CommonModule here
-  templateUrl: './notification-modal.component.html', // Reference the HTML file
+  imports: [CommonModule],
+  templateUrl: './notification-modal.component.html',
+  styleUrls: ['./notification-modal.component.css'],
 })
 export class NotificationModalComponent implements OnInit {
-  activeTab = 0; // Default tab is "All Notifications"
-  activePill = 'read'; // Default filter is "Read"
+  activeTab = 0;
+  activePill = 'read';
   notifications: any[] = [];
-  invitations: any[] = [];
-  isLoadingAll = false; // Manage loading state for "All"
-  isLoadingInvitations = false; // Manage loading state for "Invitations"
+  invitations: any[] = []; // Static or mocked for now
+  isLoadingAll = false;
+  isLoadingInvitations = false;
 
   constructor(
     public activeModal: NgbActiveModal,
-    private http: HttpClient // Inject HttpClient
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
-    this.fetchNotifications(); // Initially fetch notifications when the component is loaded
+    this.setActiveTab(0); // Only call fetchNotifications initially
   }
 
-  // Method to set the active tab and fetch data when the tab is changed
   setActiveTab(tabIndex: number) {
     this.activeTab = tabIndex;
-    if (this.activeTab === 0) {
-      this.fetchNotifications(); // Fetch all notifications when this tab is active
-    } else if (this.activeTab === 1) {
-      this.fetchInvitations(); // Fetch invitations when the "Invitation to Collaborate" tab is active
+    if (tabIndex === 0) {
+      this.fetchNotifications(); // Real API for "All"
+    } else if (tabIndex === 1) {
+      this.fetchInvitations(); // Can use static or mock for now
     }
   }
 
-  // Method to filter notifications by pill
   filterBy(pill: string) {
     this.activePill = pill;
   }
 
-  // Fetch notifications from API
-  fetchNotifications() {
-    this.isLoadingAll = true; // Set loading to true
-    this.http.get<any[]>('https://weavadev1.azurewebsites.net/notification').subscribe(
-      (response) => {
-        this.notifications = response;
-        this.isLoadingAll = false; // Set loading to false after fetching data
-      },
-      (error) => {
-        console.error('Error fetching notifications', error);
-        this.isLoadingAll = false; // Set loading to false in case of error
-      }
-    );
+  private getAuthHeaders(): HttpHeaders {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      console.error('⚠️ User not found in localStorage');
+      return new HttpHeaders();
+    }
+
+    const parsedUser = JSON.parse(user);
+    return new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
   }
 
-  // Fetch invitations from another API
-  fetchInvitations() {
-    this.isLoadingInvitations = true; // Set loading to true
-    this.http.get<any[]>('https://weavadev1.azurewebsites.net/notification').subscribe(
+  fetchNotifications() {
+    this.isLoadingAll = true;
+    const headers = this.getAuthHeaders();
+
+    this.http.get<any>('https://weavadev1.azurewebsites.net/notification', { headers }).subscribe(
       (response) => {
-        this.invitations = response;
-        this.isLoadingInvitations = false; // Set loading to false after fetching data
+        console.log("All notification", response);
+        this.notifications = response.data; // ✅ extract 'data' array
+        this.isLoadingAll = false;
       },
       (error) => {
-        console.error('Error fetching invitations', error);
-        this.isLoadingInvitations = false; // Set loading to false in case of error
+        console.error('❌ Error fetching notifications', error);
+        this.isLoadingAll = false;
+      }
+    );    
+  }
+
+  fetchInvitations() {
+    this.isLoadingInvitations = true;
+    const headers = this.getAuthHeaders();
+  
+    this.http.get<any>('https://weavadev1.azurewebsites.net/collaboration/folders/invite', { headers }).subscribe(
+      (response) => {
+        console.log('📬 Invitations:', response);
+        this.invitations = response || []; // Adjust based on actual API structure
+        this.isLoadingInvitations = false;
+      },
+      (error) => {
+        console.error('❌ Error fetching invitations:', error);
+        this.invitations = [];
+        this.isLoadingInvitations = false;
       }
     );
+  }  
+
+  viewNotification(note: any) {
+    console.log('👁 View clicked:', note);
+    // TODO: navigate or display full detail
   }
+  
+  deleteNotification(note: any) {
+    console.log('🗑 Delete clicked:', note);
+    // TODO: implement delete logic with confirmation
+  }
+  
 }

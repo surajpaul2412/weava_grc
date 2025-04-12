@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component'; // Import the confirmation dialog
+import { ShareFolderComponent } from '../share-folder/share-folder.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -25,6 +26,9 @@ export class SidebarComponent implements OnInit {
   isProfileVisible: boolean = false;
   dimBG: boolean = false;
   userName: string | null = null;
+  showSharePanel: boolean = false;
+  shareFolderId: string = '';
+  shareFolderName: string = '';
 
   constructor(private router: Router, private http: HttpClient, private dialog: MatDialog, private fb: FormBuilder, private snackBar: MatSnackBar) {
     this.createFolderForm = this.fb.group({ title: ['', Validators.required] });
@@ -145,6 +149,23 @@ export class SidebarComponent implements OnInit {
     );
   }
 
+  openShareModal(folderId: string, folderName: string): void {
+    const dialogRef = this.dialog.open(ShareFolderComponent, {
+      width: '600px',
+      data: { folderId: folderId, folderName: folderName } // Pass the folder name to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Proceed with folder deletion if user confirms
+        // this.deleteFolderApiCall(folderId);
+      } else {
+        // User cancelled the deletion, do nothing
+        console.log('Folder deletion cancelled');
+      }
+    });
+  }  
+
   showToast(message: string, type: 'success' | 'error') {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
@@ -162,4 +183,5 @@ export class SidebarComponent implements OnInit {
     this.activeFolderId = null;
     this.router.navigate(['/login']); 
   }
+  
 }
