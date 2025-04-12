@@ -10,7 +10,7 @@
             href="javascript:void(0)"
           >
             All
-            <span *ngIf="!isLoadingAll" class="badge bg-secondary text-white ms-2">
+            <span *ngIf="!isLoadingAll" class="badge bg-danger text-white ms-2">
               {{ notifications.length || 0 }}
             </span>
             <span *ngIf="isLoadingAll" class="spinner-border spinner-border-sm ms-2"></span>
@@ -26,7 +26,7 @@
             href="javascript:void(0)"
           >
             Invitation to Collaborate
-            <span *ngIf="!isLoadingInvitations" class="badge bg-secondary text-white ms-2">
+            <span *ngIf="!isLoadingInvitations" class="badge bg-danger text-white ms-2">
               {{ invitations.length || 0 }}
             </span>
             <span *ngIf="isLoadingInvitations" class="spinner-border spinner-border-sm ms-2"></span>
