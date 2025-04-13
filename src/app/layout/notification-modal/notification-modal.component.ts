@@ -84,6 +84,38 @@ export class NotificationModalComponent implements OnInit {
         this.isLoadingInvitations = false;
       }
     );
+  }
+
+  acceptInvitation(folderId: string) {
+    if (!folderId) return;
+    const headers = this.getAuthHeaders();
+  
+    this.http.post(`https://weavadev1.azurewebsites.net/collaboration/folders/${folderId}/invite/accept`, {}, { headers })
+      .subscribe({
+        next: () => {
+          console.log('✅ Folder invitation accepted:', folderId);
+          this.fetchInvitations(); // Refresh list after accepting
+        },
+        error: (err) => {
+          console.error('❌ Error accepting invitation:', err);
+        }
+      });
+  }  
+
+  declineInvitation(folderId: string) {
+    if (!folderId) return;
+    const headers = this.getAuthHeaders();
+  
+    this.http.delete(`https://weavadev1.azurewebsites.net/folders/${folderId}`, { headers })
+      .subscribe({
+        next: () => {
+          console.log('✅ Folder declined:', folderId);
+          this.fetchInvitations(); // Refresh list after decline
+        },
+        error: (err) => {
+          console.error('❌ Error declining folder:', err);
+        }
+      });
   }  
 
   viewNotification(note: any) {

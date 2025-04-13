@@ -7,16 +7,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class AzureBlobService {
   private accountName = "weavadev";  // ✅ Your Azure Storage Account
   private containerName = "pdfs";    // ✅ Your Azure Blob Container
-  private sasToken = "sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2025-04-04T05:04:48Z&st=2025-02-03T21:04:48Z&spr=https&sig=rnnPyfWXTrlHtGtf%2Fwan4PirGI78%2FpXowv6cjtXaRFY%3D"; // ✅ Your Azure SAS Token
+  private sasToken = "sv=2025-01-05&spr=https&se=2025-04-13T21%3A32%3A06Z&sr=b&sp=cw&sig=WFpwmwfMPuRdXW4QDXoIs%2FWJDuzWr9CVv6uiy9DTigQ%3D"; // ✅ Your Azure SAS Token
   private backendApiUrl = "https://weavadev1.azurewebsites.net"; // ✅ Backend API Base URL
 
   constructor(private http: HttpClient) {}
 
   // ✅ Upload File to Azure Blob Storage
   async uploadFile(file: File, folderId: string): Promise<boolean> {
-    const blobUrl = `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${file.name}?${this.sasToken}`;
-
     try {
+      const sasToken = await this.getSasToken(file.name);
+      if (!sasToken) return false;
+  
+      const blobUrl = `https://${this.accountName}.blob.core.windows.net/${this.containerName}/${file.name}?${sasToken}`;
+  
       const response = await fetch(blobUrl, {
         method: "PUT",
         body: file,
@@ -25,28 +28,53 @@ export class AzureBlobService {
           "Content-Type": file.type
         }
       });
-
+  
       if (response.ok) {
         console.log("✅ File uploaded successfully:", file.name);
-        
-        // ✅ After successful upload, call API to get Signed URL
+  
         const signedUrlResponse = await this.getSignedUrl(file.name, folderId);
-
         if (signedUrlResponse) {
-          // ✅ Call setPdf API with the required response data
           await this.setPdf(signedUrlResponse, file.name, folderId);
         }
-
+  
         return true;
       } else {
         console.error("❌ Upload failed:", response.statusText);
-        return false; // Upload failed
+        return false;
       }
     } catch (error) {
       console.error("🚨 Error uploading file:", error);
-      return false; // Error occurred
+      return false;
     }
   }
+
+  private async getSasToken(fileName: string): Promise<string | null> {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      console.error("❌ No user found in localStorage!");
+      return null;
+    }
+  
+    const parsedUser = JSON.parse(user);
+    const authToken = parsedUser.authToken;
+  
+    if (!authToken) {
+      console.error("❌ No authToken found in localStorage!");
+      return null;
+    }
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${authToken}`
+    });
+  
+    try {
+      const response: any = await this.http.get(`${this.backendApiUrl}/files/sas-token?fileName=${fileName}`, { headers }).toPromise();
+      return response?.token || null;
+    } catch (error) {
+      console.error("❌ Error fetching SAS token:", error);
+      return null;
+    }
+  }  
 
   // ✅ Call API to Get Signed URL After Upload
   async getSignedUrl(fileName: string, folderId: string): Promise<any> {

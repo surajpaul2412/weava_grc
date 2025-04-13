@@ -20,6 +20,6 @@ export const environment = {
   azureStorage: {
     accountName: 'weavadev',
     containerName: 'pdfs',
-    sasToken: 'sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2025-04-04T05:04:48Z&st=2025-02-03T21:04:48Z&spr=https&sig=rnnPyfWXTrlHtGtf%2Fwan4PirGI78%2FpXowv6cjtXaRFY%3D', // Ensure this is valid
+    sasToken: 'sv=2025-01-05&spr=https&se=2025-04-13T21%3A32%3A06Z&sr=b&sp=cw&sig=WFpwmwfMPuRdXW4QDXoIs%2FWJDuzWr9CVv6uiy9DTigQ%3D', // Ensure this is valid
   }
 };
