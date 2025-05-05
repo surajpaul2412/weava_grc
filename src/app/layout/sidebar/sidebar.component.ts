@@ -161,7 +161,7 @@ export class SidebarComponent implements OnInit {
         // this.deleteFolderApiCall(folderId);
       } else {
         // User cancelled the deletion, do nothing
-        console.log('Folder deletion cancelled');
+        console.log('Modal closed');
       }
     });
   }  

@@ -14,6 +14,8 @@ import { MatSnackBar } from '@angular/material/snack-bar'; // ✅ Add this
 })
 export class ShareFolderComponent {
   inviteEmail: string = '';
+  invitations: any[] = []; // This will hold the invited people
+  acceptedInvites: any[] = []; // This will hold the accepted invited people
 
   constructor(
     public dialogRef: MatDialogRef<ShareFolderComponent>,
@@ -21,6 +23,57 @@ export class ShareFolderComponent {
     private http: HttpClient,
     private snackBar: MatSnackBar
   ) {}
+
+  ngOnInit() {
+    this.fetchInvitations(); // Fetch invitations when the component initializes
+    this.fetchAcceptedInvites();
+  }
+
+  fetchInvitations() {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      this.showToast('User not logged in', 'error');
+      return;
+    }
+  
+    const parsedUser = JSON.parse(user);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
+  
+    this.http.get<any>(`https://weavadev1.azurewebsites.net/collaboration/folders/${this.data.folderId}/invite`, { headers })
+      .subscribe({
+        next: (response: any) => {
+          console.log('✅ Invitations fetched:', response);
+          this.invitations = response.invited || []; // Store the list of invited people
+        },
+        error: (err) => {
+          console.error('❌ Error fetching invitations:', err);
+          this.showToast('Failed to fetch invitations.', 'error');
+        }
+      });
+  }
+
+  fetchAcceptedInvites() {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      this.showToast('User not logged in', 'error');
+      return;
+    }
+  
+    const parsedUser = JSON.parse(user);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
+  
+    this.http.get<any>(`https://weavadev1.azurewebsites.net/collaboration/folders/${this.data.folderId}/accept`, { headers })
+      .subscribe({
+        next: (response: any) => {
+          console.log('✅ Accepted Invites fetched:', response);
+          this.acceptedInvites = response.acceptedUsers || []; // Store the list of accepted invited people
+        },
+        error: (err) => {
+          console.error('❌ Error fetching invitations:', err);
+          this.showToast('Failed to fetch invitations.', 'error');
+        }
+      });
+  }
 
   inviteUser() {
     const user = localStorage.getItem('user');
@@ -46,13 +99,15 @@ export class ShareFolderComponent {
           console.log('✅ Response:', response);
           this.showToast('Invitation sent successfully!', 'success');
           this.inviteEmail = '';
+          this.fetchInvitations(); // Refresh the invite list after sending invitation
+          this.fetchAcceptedInvites();
         },
         error: (err) => {
           console.error('❌ Error inviting user:', err);
           this.showToast('Failed to send invitation.', 'error');
         }
       });
-  }  
+  }
 
   onConfirm(): void {
     this.dialogRef.close(true);
@@ -68,5 +123,4 @@ export class ShareFolderComponent {
       panelClass: type === 'success' ? 'success-toast' : 'error-toast'
     });
   }
-  
 }

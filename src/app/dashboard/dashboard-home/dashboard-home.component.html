@@ -196,7 +196,7 @@
                             <section _ngcontent-wat-c96="" class="website-list-wrapper">
 
                                 <!-- folder in detail -->
-                                <div _ngcontent-wat-c96="" _nghost-wat-c94="">
+                                <div _ngcontent-wat-c96="" _nghost-wat-c94="" *ngIf="folderDetails?.subfolders">
                                     <div _ngcontent-wat-c94="" class="folder-card-list"
                                         *ngFor="let subFolder of folderDetails.subfolders">
                                         <div _ngcontent-wat-c94="" class="flex folder-card">
@@ -316,7 +316,7 @@
 
                                 </div>
                                 <!-- files in detail -->
-                                <div _ngcontent-wat-c96="" _nghost-wat-c93="">
+                                <div _ngcontent-wat-c96="" _nghost-wat-c93="" *ngIf="folderDetails?.websiteIds">
 
                                     <div _ngcontent-wat-c93="" class="main-panel-website-list">
                                         <div _ngcontent-wat-c93="" _nghost-wat-c92=""
