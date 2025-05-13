@@ -3,7 +3,7 @@
 
     <!-- Folder Info -->
     <div class="d-flex align-items-start mb-3">
-        <img src="https://www.weavatools.com/app/assets/images/svg/folder-shared-icon.svg" class="me-3"
+        <img src="images/svg/folder-shared-icon.svg" class="me-3"
             style="width: 36px;" />
         <div>
             <div class="fw-medium">{{ data.folderName }}</div>
@@ -18,31 +18,38 @@
         <!-- Member 1 (Owner) -->
         <div *ngFor="let invite of acceptedInvites" class="d-flex align-items-center justify-content-between mb-2">
             <div class="d-flex align-items-center">
-                <img class="rounded-circle me-2"
-                    src="https://lh3.googleusercontent.com/a/ACg8ocIl92QsORdNOMsac4w3pG2LAGvIbWakiF02DMAWRVETrgL8OQ=s96-c"
-                    width="36" height="36" />
-                <div>
-                    <div class="fw-semibold">{{ invite.displayName }}</div>
-                    <div class="text-muted small">{{ invite.email }}</div>
-                </div>
+              <img
+                class="rounded-circle me-2"
+                [src]="invite.imageUrl"
+                (error)="invite.imageError = true"
+                *ngIf="!invite.imageError"
+                width="36"
+                height="36"
+              />
+          
+              <!-- Fallback Circle with Initial -->
+              <div
+                *ngIf="invite.imageError"
+                class="rounded-circle d-flex align-items-center justify-content-center me-2 text-white"
+                [ngStyle]="{
+                  width: '36px',
+                  height: '36px',
+                  backgroundColor: getRandomColor(invite),
+                  fontSize: '14px'
+                }"
+              >
+                {{ invite.displayName?.charAt(0) | uppercase }}
+              </div>
+          
+              <div>
+                <div class="fw-semibold">{{ invite.displayName }}</div>
+                <div class="text-muted small">{{ invite.email }}</div>
+              </div>
             </div>
-            <div class="text-muted small fw-semibold">owner</div>
-        </div>
-
-        <!-- Member 2 -->
-        <div class="d-flex align-items-center justify-content-between mb-2">
-            <div class="d-flex align-items-center">
-                <img class="rounded-circle me-2"
-                    src="https://lh3.googleusercontent.com/a/ACg8ocK8Mz45H-RCsqHlnIKhK3maoJ_yZVJ1RdJ7aPVgiE3hCL2ihw=s96-c"
-                    width="36" height="36" />
-                <div>
-                    <div class="fw-semibold">Divyanshu Gaur</div>
-                    <div class="text-muted small">divyanshuthehonestco.in</div>
-                </div>
-            </div>
-            <img src="https://www.weavatools.com/app/assets/images/svg/cross-icon.svg" class="cursor-pointer"
+            <!-- <div class="text-muted small fw-semibold">owner</div> -->
+            <img src="images/svg/cross-icon.svg" class="cursor-pointer"
                 width="16" />
-        </div>
+          </div>
 
         <!-- Invited Section -->
         <div class="mb-2 fw-semibold border-bottom pb-1">Invited</div>
@@ -54,18 +61,43 @@
 
         <div *ngFor="let invitation of invitations" class="d-flex align-items-center justify-content-between mb-3">
             <div class="d-flex align-items-center">
-                <img class="rounded-circle me-2"
-                    src="https://lh3.googleusercontent.com/a/ACg8ocKiHRsH2k1I4YqKlrSDNucRlKe_2HHgK112MxFFvHkmm7uqsjTPrQ=s96-c"
-                    width="36" height="36" />
-                <div>
-                    <div class="fw-semibold">{{ invitation.displayName }}</div>
-                    <div class="text-muted small">{{ invitation.email }}</div>
-                </div>
+              <!-- Profile Image -->
+              <img
+                class="rounded-circle me-2"
+                [src]="invitation.imageUrl"
+                (error)="invitation.imageError = true"
+                *ngIf="!invitation.imageError"
+                width="36"
+                height="36"
+              />
+          
+              <!-- Fallback Circle with First Letter of Email -->
+              <div
+                *ngIf="invitation.imageError"
+                class="rounded-circle d-flex align-items-center justify-content-center me-2 text-white"
+                [ngStyle]="{
+                  width: '36px',
+                  height: '36px',
+                  backgroundColor: getRandomColor(invitation),
+                  fontSize: '14px'
+                }"
+              >
+                {{ invitation.email?.charAt(0) | uppercase }}
+              </div>
+          
+              <div>
+                <div class="fw-semibold">{{ invitation.displayName }}</div>
+                <div class="text-muted small">{{ invitation.email }}</div>
+              </div>
             </div>
-            <img src="https://www.weavatools.com/app/assets/images/svg/cross-icon.svg" class="cursor-pointer"
-                width="16" />
-        </div>
-
+          
+            <!-- Cross Icon -->
+            <img
+              src="images/svg/cross-icon.svg"
+              class="cursor-pointer"
+              width="16"
+            />
+          </div>
 
         <input type="email" [(ngModel)]="inviteEmail" class="form-control" placeholder="Enter email address..." />
 

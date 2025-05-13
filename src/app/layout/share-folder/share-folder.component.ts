@@ -117,6 +117,15 @@ export class ShareFolderComponent {
     this.dialogRef.close(false);
   }
 
+  getRandomColor(invite: any): string {
+    if (!invite._color) {
+      const colors = ['#007bff', '#28a745', '#dc3545', '#17a2b8', '#6f42c1', '#fd7e14', '#20c997'];
+      invite._color = colors[Math.floor(Math.random() * colors.length)];
+    }
+    return invite._color;
+  }
+
+
   showToast(message: string, type: 'success' | 'error') {
     this.snackBar.open(message, 'Close', {
       duration: 3000,

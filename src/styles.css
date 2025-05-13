@@ -17629,3 +17629,17 @@ table {
   background-color: #f44336 !important;
   color: white;
 }
+
+/* Wider modal width */
+.custom-wide-modal .modal-dialog {
+    max-width: 650px;
+    width: 90%;
+  }
+  
+  /* Align modal at top-center */
+  .modal-top-centered .modal-dialog {
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+  

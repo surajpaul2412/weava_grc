@@ -40,6 +40,9 @@ export class HeaderComponent implements OnInit {
   }  
 
   openNotificationModal() {
-    this.modalService.open(NotificationModalComponent, { centered: true });
-  }
+    this.modalService.open(NotificationModalComponent, {
+      centered: true,
+      windowClass: 'custom-wide-modal modal-top-centered'
+    });
+  }  
 }

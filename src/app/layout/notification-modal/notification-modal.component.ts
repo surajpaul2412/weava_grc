@@ -14,7 +14,7 @@ export class NotificationModalComponent implements OnInit {
   activeTab = 0;
   activePill = 'read';
   notifications: any[] = [];
-  invitations: any[] = []; // Static or mocked for now
+  invitations: any[] = [];
   isLoadingAll = false;
   isLoadingInvitations = false;
 
@@ -24,15 +24,15 @@ export class NotificationModalComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.setActiveTab(0); // Only call fetchNotifications initially
+    this.setActiveTab(0);
   }
 
   setActiveTab(tabIndex: number) {
     this.activeTab = tabIndex;
     if (tabIndex === 0) {
-      this.fetchNotifications(); // Real API for "All"
+      this.fetchNotifications();
     } else if (tabIndex === 1) {
-      this.fetchInvitations(); // Can use static or mock for now
+      this.fetchInvitations();
     }
   }
 
@@ -58,14 +58,14 @@ export class NotificationModalComponent implements OnInit {
     this.http.get<any>('https://weavadev1.azurewebsites.net/notification', { headers }).subscribe(
       (response) => {
         console.log("All notification", response);
-        this.notifications = response.data; // ✅ extract 'data' array
+        this.notifications = response.data || [];
         this.isLoadingAll = false;
       },
       (error) => {
         console.error('❌ Error fetching notifications', error);
         this.isLoadingAll = false;
       }
-    );    
+    );
   }
 
   fetchInvitations() {
@@ -75,7 +75,7 @@ export class NotificationModalComponent implements OnInit {
     this.http.get<any>('https://weavadev1.azurewebsites.net/collaboration/folders/invite', { headers }).subscribe(
       (response) => {
         console.log('📬 Invitations:', response);
-        this.invitations = response || []; // Adjust based on actual API structure
+        this.invitations = response || [];
         this.isLoadingInvitations = false;
       },
       (error) => {
@@ -94,7 +94,7 @@ export class NotificationModalComponent implements OnInit {
       .subscribe({
         next: () => {
           console.log('✅ Folder invitation accepted:', folderId);
-          this.fetchInvitations(); // Refresh list after accepting
+          this.fetchInvitations();
         },
         error: (err) => {
           console.error('❌ Error accepting invitation:', err);
@@ -110,7 +110,7 @@ export class NotificationModalComponent implements OnInit {
       .subscribe({
         next: () => {
           console.log('✅ Folder declined:', folderId);
-          this.fetchInvitations(); // Refresh list after decline
+          this.fetchInvitations();
         },
         error: (err) => {
           console.error('❌ Error declining folder:', err);
@@ -119,13 +119,60 @@ export class NotificationModalComponent implements OnInit {
   }  
 
   viewNotification(note: any) {
-    console.log('👁 View clicked:', note);
-    // TODO: navigate or display full detail
+    if (!note || !note.id) return;
+
+    const headers = this.getAuthHeaders();
+
+    this.http.patch(
+      `https://weavadev1.azurewebsites.net/notification/read/${note.id}`,
+      {},
+      { headers }
+    ).subscribe({
+      next: () => {
+        console.log('✅ Marked as read:', note.id);
+        note.read = true; // update UI directly
+      },
+      error: (err) => {
+        console.error('❌ Error marking as read:', err);
+      }
+    });
   }
+
+  unreadNotification(note: any) {
+    if (!note || !note.id) return;
   
+    const headers = this.getAuthHeaders();
+  
+    this.http.patch(
+      `https://weavadev1.azurewebsites.net/notification/unread/${note.id}`,
+      {},
+      { headers }
+    ).subscribe({
+      next: () => {
+        console.log('✅ Marked as unread:', note.id);
+        note.read = false; // ✅ Update UI immediately to reflect unread status
+      },
+      error: (err) => {
+        console.error('❌ Error marking as unread:', err);
+      }
+    });
+  }  
+
   deleteNotification(note: any) {
-    console.log('🗑 Delete clicked:', note);
-    // TODO: implement delete logic with confirmation
+    if (!note || !note.id) return;
+
+    const headers = this.getAuthHeaders();
+    const confirmed = confirm(`Are you sure you want to delete notification "${note.title}"?`);
+    if (!confirmed) return;
+
+    this.http.delete(`https://weavadev1.azurewebsites.net/notification/${note.id}`, { headers }).subscribe({
+      next: () => {
+        console.log('Notification deleted:', note.id);
+        this.notifications = this.notifications.filter(n => n.id !== note.id);
+      },
+      error: (err) => {
+        console.error('❌ Error deleting notification:', err);
+      }
+    });
   }
-  
 }
