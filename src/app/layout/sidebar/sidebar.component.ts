@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component'; // Import the confirmation dialog
 import { ShareFolderComponent } from '../share-folder/share-folder.component';
+import { EditFolderComponent } from '../edit-folder/edit-folder.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -118,6 +119,42 @@ export class SidebarComponent implements OnInit {
     });
   }
 
+  createSubFolder(parentFolderId: string) {
+    if (!parentFolderId) {
+      console.error('Parent folder ID is required');
+      return;
+    }
+
+    const user = localStorage.getItem('user');
+    if (!user) {
+      console.error('User not found in localStorage');
+      return;
+    }
+
+    const parsedUser = JSON.parse(user);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
+
+    // Example new folder title; you might want to get this from UI input
+    const newFolderData = { title: 'New Sub Folder' };
+
+    this.http.post(
+      `https://weavadev1.azurewebsites.net/folders/${parentFolderId}`,
+      newFolderData,
+      { headers }
+    ).subscribe({
+      next: (response) => {
+        console.log('Subfolder created successfully', response);
+        this.showToast('Subfolder created successfully', 'success');
+        this.refreshFolders();  // Refresh folder list to show new folder
+      },
+      error: (error) => {
+        console.error('Error creating subfolder:', error);
+        const message = error?.error?.metadata?.error?.message || 'Failed to create subfolder';
+        this.showToast(message, 'error');
+      }
+    });
+  }
+
   deleteFolderApiCall(folderId: string) {
     const user = localStorage.getItem('user');
     if (!user) return console.error('User not found in localStorage');
@@ -152,6 +189,23 @@ export class SidebarComponent implements OnInit {
   openShareModal(folderId: string, folderName: string): void {
     const dialogRef = this.dialog.open(ShareFolderComponent, {
       width: '600px',
+      data: { folderId: folderId, folderName: folderName } // Pass the folder name to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Proceed with folder deletion if user confirms
+        // this.deleteFolderApiCall(folderId);
+      } else {
+        // User cancelled the deletion, do nothing
+        console.log('Modal closed');
+      }
+    });
+  }
+
+  openEditModal(folderId: string, folderName: string): void {
+    const dialogRef = this.dialog.open(EditFolderComponent, {
+      width: '300px',
       data: { folderId: folderId, folderName: folderName } // Pass the folder name to the dialog
     });
 
