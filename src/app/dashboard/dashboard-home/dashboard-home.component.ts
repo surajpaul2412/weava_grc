@@ -36,6 +36,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
   alertVisible: boolean = true;
   uploadProgress: any = 0;
   selectedText: string = '';
+  pdfUrl: string = '';
 
   constructor(
     private http: HttpClient,
@@ -64,10 +65,11 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     this.selectedTab = tab;
   }
 
-  showPdfView() {
+  showPdfView(url: string) {
     this.PdfView = true;
+    this.pdfUrl = 'https://' + url;  // Dynamically set the PDF URL
     setTimeout(() => {
-      this.addTextSelectionListener(); // ✅ Add text selection event listener
+      this.addTextSelectionListener(); // Add text selection event listener
     }, 1000);
   }
 

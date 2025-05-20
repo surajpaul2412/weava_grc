@@ -206,15 +206,13 @@ export class SidebarComponent implements OnInit {
   openEditModal(folderId: string, folderName: string): void {
     const dialogRef = this.dialog.open(EditFolderComponent, {
       width: '300px',
-      data: { folderId: folderId, folderName: folderName } // Pass the folder name to the dialog
+      data: { folderId: folderId, folderName: folderName } // Passing folderId and folderName to the modal
     });
-
+  
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Proceed with folder deletion if user confirms
-        // this.deleteFolderApiCall(folderId);
+        this.refreshFolders();
       } else {
-        // User cancelled the deletion, do nothing
         console.log('Modal closed');
       }
     });

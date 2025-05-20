@@ -338,8 +338,7 @@
                                                         src="https://www.weavatools.com/app/assets/images/svg/pdf-website-icon.svg">
                                                 </div>
                                                 <div _ngcontent-wat-c92="" class="main-panel-website-card-data">
-                                                    <a _ngcontent-wat-c92="" rel="noopener"
-                                                        href="chrome-extension://cbnaodkpfinfiipjblikofhlhlcickei/src/pdfviewer/web/viewer.html?file=https://www.weavatools.com/apis/pdfstorage/-OHO8dN09jk3BFjFQFnv">{{file.fileName
+                                                    <a _ngcontent-wat-c92="" rel="noopener" (click)="showPdfView(file.url)">{{file.fileName
                                                         ?? 'unknown.pdf'}}</a>
                                                     <div _ngcontent-wat-c92="" class="main-panel-website-stat">
                                                         <div _ngcontent-wat-c92=""
@@ -674,17 +673,6 @@
                                 </div>
 
 
-                                <!-- testing -->
-                                <hr />
-                                <button class="btn btn-success mx-2" (click)="showPdfView()">Show PDF</button>
-                                <button class="btn btn-danger mx-2" (click)="hidePdfView()">Hide PDF</button>
-
-
-
-
-
-
-
                             </section>
                         </div>
 
@@ -692,7 +680,7 @@
 
                         <div *ngIf="selectedTab === 'documents'" _ngcontent-wat-c61="" class="main-panel-list"
                             _nghost-wat-c96="">
-                            <button class="btn btn-success mx-2" (click)="showPdfView()">Show PDF</button>
+                            <button class="btn btn-success mx-2">Test Button</button>
                             <button class="btn btn-danger mx-2" (click)="hidePdfView()">Hide PDF</button>
                         </div>
 
@@ -1041,7 +1029,7 @@
                             <!-- <iframe _ngcontent-wat-c44="" id="website-viewer-frame" loading="lazy" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-modals allow-top-navigation-by-user-activation allow-top-navigation allow-downloads" style="border: none; width: inherit; height: 96%;" src="chrome-extension://cbnaodkpfinfiipjblikofhlhlcickei/src/pdfviewer/web/viewer.html?file=https://www.weavatools.com/apis/pdfstorage/-OHO95LrRhRfgt2U3Qfi?token=eyJhbGciOiJSUzI1NiIsImtpZCI6ImRjNjI2MmYzZTk3NzIzOWMwMDUzY2ViODY0Yjc3NDBmZjMxZmNkY2MiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiU3VyYWogUGF1bCIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NLaUhSc0gyazFJNFlxS2xyU0ROdWNSbEtlXzJISGdLMTEyTXhGRnZIa21tN3Vxc2pUUHJRPXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL3dyaXRpby0xMzQxIiwiYXVkIjoid3JpdGlvLTEzNDEiLCJhdXRoX3RpbWUiOjE3NDA3NzE2OTQsInVzZXJfaWQiOiJ1QktvN08wdnVhZ2paOVpuMFNZWDJ4U3ZVVnIyIiwic3ViIjoidUJLbzdPMHZ1YWdqWjlabjBTWVgyeFN2VVZyMiIsImlhdCI6MTc0MDc3MjY2MSwiZXhwIjoxNzQwNzc2MjYxLCJlbWFpbCI6InN1cmFqLnBhdWwuNjlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMTU1NDExMjg4MTExMzg5NzY1NTkiXSwiZW1haWwiOlsic3VyYWoucGF1bC42OUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.hQArZC4ieOIKDjpx3-HkwGJa9o_AvDPxtG0RhgN6913pcMrz9x0KYvJk9RjU7UlZ_KXTspd6507b-laazIA3TiJmJH6kU3LHhmOqBpij1S682OtyubnQE8axh_xKNfEGle6nI10rgy_x2Ky5UiriAy4IEmfpXlb-dHlwhsJE100J3kZ9Xe7T6qQWdaDBCKzePZWxKZQj5u8GWE05zYF2tMiEgkffuXFsTM-ScIRghAlLnSEwieQS3-C3QilpxUWJqXIC0aAf0YpsgE8Okv7CXrkTPH-8PDtxNQOAt9QHSeT3fEfnxffPJnDGb-ihcHhrmSsVwZvjECE0uwkpNk2KBg"></iframe> -->
                             <div *ngIf="PdfView" id="pdf-container">
                                 <ngx-extended-pdf-viewer
-                                  [src]="'https://tourism.gov.in/sites/default/files/2019-04/dummy-pdf_2.pdf'"
+                                  [src]="pdfUrl"
                                   useBrowserLocale="true"
                                   showBookmarkButton="true"
                                   [showToolbar]="true"

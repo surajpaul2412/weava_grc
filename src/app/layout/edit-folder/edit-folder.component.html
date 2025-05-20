@@ -2,16 +2,16 @@
   <!-- Modal Header -->
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h5 class="mb-0 fw-semibold">EDIT FOLDER</h5>
-    <button type="button" class="btn-close" aria-label="Close"></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onCancel()"></button>
   </div>
 
-  <!-- Folder Name Input -->
   <input
-    type="text"
-    value="Suraj V2"
-    class="form-control mb-3"
-    style="height: 38px; font-weight: 500;"
-  />
+  type="text"
+  [(ngModel)]="folderName"
+  class="form-control mb-3"
+  style="height: 38px; font-weight: 500;"
+  placeholder="Enter Folder Name"
+/>
 
   <!-- Color Labels List -->
   <div class="d-flex align-items-center mb-2">
@@ -78,7 +78,7 @@
 
   <!-- Footer Buttons -->
   <div class="d-flex justify-content-between">
-    <button class="btn btn-danger px-4">Cancel</button>
-    <button class="btn btn-info px-4">Save</button>
+    <button type="button" class="btn btn-danger px-4" (click)="onCancel()">Cancel</button>
+    <button type="button" class="btn btn-info text-white px-4" (click)="saveFolder()">Save</button>
   </div>
 </div>
