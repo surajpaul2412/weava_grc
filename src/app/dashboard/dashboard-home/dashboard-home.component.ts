@@ -247,5 +247,9 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     input.value = '';
     this.fetchFolderDetails(this.activeFolderId);
   }
+
+  goToContributeWeava() {
+    this.router.navigate(['/contribute-weava']); // Programmatically navigate to the signup page
+  }
   
 }

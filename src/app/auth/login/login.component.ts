@@ -66,4 +66,8 @@ export class LoginComponent {
       panelClass: type === 'success' ? 'success-toast' : 'error-toast'
     });
   }
+
+  goToSignup() {
+    this.router.navigate(['/signup']); // Programmatically navigate to the signup page
+  }
 }
