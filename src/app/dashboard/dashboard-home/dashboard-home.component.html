@@ -12,7 +12,7 @@
                 <div _ngcontent-wat-c68="" _nghost-wat-c61="">
                     <div _ngcontent-wat-c61="" class="main-panel">
 
-
+                        <!-- top upder-header -->
                         <div *ngIf="selectedTab === 'highlights'" _ngcontent-wat-c61="" _nghost-wat-c56="">
                             <div _ngcontent-wat-c56="" class="main-panel-filter">
                                 <div _ngcontent-wat-c56="" class="nav-filter-wrapper">
@@ -168,7 +168,6 @@
                                                 class="bulk-edit-cross-icon"></button></div>
                                 </div>
                             </div>
-
                         </div>
 
                         <!-- Upload file progress -->
@@ -315,8 +314,11 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
+
+
+
+
                                 <!-- files in detail -->
                                 <div _ngcontent-wat-c96="" _nghost-wat-c93="" *ngIf="folderDetails?.websiteIds">
 
@@ -637,44 +639,42 @@
 
                                     </div>
 
-                                    <!-- upload files -->
-                                    <div _ngcontent-wat-c93="" class="website-list-bottom-button-wrapper">
-                                        <label _ngcontent-wat-c93="" for="upload-pdf-website-list-button"
-                                            class="website-list-bottom-button-group">
-                                            <form _ngcontent-wat-c93="" novalidate enctype="multipart/form-data"
-                                                method="post"><input _ngcontent-wat-c93="" appuploadpdfbutton
-                                                    accept=".pdf" id="upload-pdf-website-list-button" type="file"
-                                                    (change)="onFileSelected($event)" multiple style="display: none;">
-                                            </form>
-                                            <div _ngcontent-wat-c93="" class="website-list-bottom-button-hint">
-                                                Highlight PDF <br /> from my computer: </div>
-                                            <div _ngcontent-wat-c93="" id="uploadTrigger"
-                                                class="text-button secondary-text-button upload-trigger">
-                                                <img _ngcontent-wat-c93=""
-                                                    src="https://www.weavatools.com/app/assets/images/svg/upload-icon.svg"
-                                                    class="upload-icon">
-                                                <div _ngcontent-wat-c93=""
-                                                    style="display: inline-block; vertical-align: middle; padding-left: 4px;">
-                                                    Upload PDFs</div>
-                                            </div>
-                                        </label>
-                                        <div _ngcontent-wat-c93="" class="website-list-bottom-button-group">
-                                            <div _ngcontent-wat-c93="" class="website-list-bottom-button-hint">
-                                                Collaborate with <br _ngcontent-wat-c93="">other people:</div>
-                                            <div _ngcontent-wat-c93="" class="text-button secondary-text-button">
-                                                <img _ngcontent-wat-c93="" width="20px"
-                                                    src="https://www.weavatools.com/app/assets/images/svg/share-icon.svg"
-                                                    style="display: inline-block; vertical-align: middle; opacity: 0.7;">
-                                                <div _ngcontent-wat-c93=""
-                                                    style="display: inline-block; vertical-align: middle; padding-left: 4px;">
-                                                    Share collection</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </div>
 
-
+                                <!-- upload files -->
+                                <div _ngcontent-wat-c93="" class="website-list-bottom-button-wrapper">
+                                    <label _ngcontent-wat-c93="" for="upload-pdf-website-list-button"
+                                        class="website-list-bottom-button-group">
+                                        <form _ngcontent-wat-c93="" novalidate enctype="multipart/form-data"
+                                            method="post"><input _ngcontent-wat-c93="" appuploadpdfbutton
+                                                accept=".pdf" id="upload-pdf-website-list-button" type="file"
+                                                (change)="onFileSelected($event)" multiple style="display: none;">
+                                        </form>
+                                        <div _ngcontent-wat-c93="" class="website-list-bottom-button-hint">
+                                            Highlight PDF <br /> from my computer: </div>
+                                        <div _ngcontent-wat-c93="" id="uploadTrigger"
+                                            class="text-button secondary-text-button upload-trigger">
+                                            <img _ngcontent-wat-c93=""
+                                                src="https://www.weavatools.com/app/assets/images/svg/upload-icon.svg"
+                                                class="upload-icon">
+                                            <div _ngcontent-wat-c93=""
+                                                style="display: inline-block; vertical-align: middle; padding-left: 4px;">
+                                                Upload PDFs</div>
+                                        </div>
+                                    </label>
+                                    <div _ngcontent-wat-c93="" class="website-list-bottom-button-group">
+                                        <div _ngcontent-wat-c93="" class="website-list-bottom-button-hint">
+                                            Collaborate with <br _ngcontent-wat-c93="">other people:</div>
+                                        <div _ngcontent-wat-c93="" class="text-button secondary-text-button">
+                                            <img _ngcontent-wat-c93="" width="20px"
+                                                src="https://www.weavatools.com/app/assets/images/svg/share-icon.svg"
+                                                style="display: inline-block; vertical-align: middle; opacity: 0.7;">
+                                            <div _ngcontent-wat-c93=""
+                                                style="display: inline-block; vertical-align: middle; padding-left: 4px;">
+                                                Share collection</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </section>
                         </div>
 
