@@ -9,7 +9,10 @@ import { FooterComponent } from '../../layout/footer/footer.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AzureBlobService } from '../../services/azure-blob.service'; // ✅ Import Service
+import { AzureBlobService } from '../../services/azure-blob.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from '../../layout/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -43,7 +46,9 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private azureBlobService: AzureBlobService
+    private azureBlobService: AzureBlobService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
@@ -51,14 +56,86 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       const folderId = params['folder'] || null;
       this.activeFolderId = folderId;
       this.updateActiveFolderName();
-
-      // ✅ Fetch details only if folders are already loaded
-      // if (this.folders.length > 0 && this.activeFolderId) {
-      //   this.fetchFolderDetails(this.activeFolderId);
-      // }
     });
 
     this.fetchFolders();
+  }
+
+  // Function to delete the folder
+  deleteFolder(folderId: string, folderName: string) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { folderName: folderName }  // Pass folder name to dialog for confirmation
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        // Proceed with folder deletion
+        this.deleteFolderApiCall(folderId);
+      } else {
+        // User cancelled, do nothing
+        console.log('Folder deletion cancelled');
+      }
+    });
+  }
+
+  // Function to call the delete API
+  deleteFolderApiCall(folderId: string) {
+    const headers = this.getAuthHeaders();
+    if (!headers) return;
+
+    // API request to delete the folder
+    this.http.delete(`https://weavadev1.azurewebsites.net/folders/${folderId}`, { headers }).subscribe(
+      (response) => {
+        this.snackBar.open('Folder deleted successfully!', 'Close', { duration: 3000 });
+        // After deletion, refresh both the folder list (sidebar) and folder details
+        this.fetchFolders();  // Refresh the sidebar
+        this.fetchFolderDetails(this.activeFolderId); // Refresh the folder details after deletion
+      },
+      (error) => {
+        console.error('Error deleting folder:', error);
+        this.snackBar.open('Failed to delete folder.', 'Close', { duration: 3000 });
+      }
+    );
+  }
+
+  // Function to get Auth Headers
+  private getAuthHeaders(): HttpHeaders | null {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      this.snackBar.open('User not logged in', 'Close', { duration: 3000 });
+      return null;
+    }
+    const parsedUser = JSON.parse(user);
+    return new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
+  }
+
+  // Function to delete a file
+  deleteFile(folderId: string, websiteId: string) {
+    const deleteData = {
+      folderId: folderId,
+      websiteId: websiteId,
+      isHosted: true
+    };
+
+    console.log(deleteData);
+
+    const headers = this.getAuthHeaders();
+    if (!headers) return;
+
+    this.http.delete('https://weavadev1.azurewebsites.net/files/pdf', { 
+      headers, 
+      body: deleteData 
+    }).subscribe({
+      next: (response) => {
+        this.snackBar.open('File deleted successfully!', 'Close', { duration: 3000 }); // ✅ Using snackBar for success
+        console.log('File deleted successfully:', response);
+        this.fetchFolderDetails(folderId);  // Refresh folder details after deletion
+      },
+      error: (err) => {
+        console.error('Error deleting file:', err);
+        this.snackBar.open('Failed to delete file.', 'Close', { duration: 3000 }); // ✅ Using snackBar for error
+      }
+    });
   }
 
   switchTab(tab: string) {
@@ -109,6 +186,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     }
   };
 
+  // Function to fetch folders
   fetchFolders() {
     const user = this.authService.getUser();
     if (!user || !user.authToken) {
@@ -124,38 +202,33 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
           this.folders = response.folderList;
 
           if (!this.activeFolderId) {
-            // ✅ Set the first folder as active and update the URL
             const firstFolderId = this.folders[0].folderId;
-            this.setActiveFolder(firstFolderId, false); // ✅ Ensure URL reflects change
+            this.setActiveFolder(firstFolderId, false);
           } else {
             this.updateActiveFolderName();
 
-            // ✅ Prevent double calls
             if (!this.folderDetails || this.folderDetails.folderId !== this.activeFolderId) {
               this.fetchFolderDetails(this.activeFolderId);
             }
           }
-
-          console.log('✅ Folders fetched successfully:', this.folders);
         } else {
-          console.error('🚨 Unexpected API response:', response);
+          console.error('Unexpected API response:', response);
         }
       },
       (error) => {
-        console.error('❌ Error fetching folders:', error);
+        console.error('Error fetching folders:', error);
       }
     );
   }
 
-  // ✅ Set Active Folder and Update URL
+  // Function to set active folder and update URL
   setActiveFolder(folderId: string | null, isInitialLoad = false) {
     if (!folderId) return;
 
-    this.activeFolderId = folderId;    
+    this.activeFolderId = folderId;
     this.updateActiveFolderName();
     this.fetchFolderDetails(folderId);
 
-    // ✅ Ensure the URL is updated correctly when setting the first folder
     this.router.navigate([], { queryParams: { folder: folderId }, queryParamsHandling: 'merge' });
   }
 

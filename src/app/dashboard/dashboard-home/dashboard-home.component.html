@@ -290,7 +290,8 @@
 
                                                                     <button _ngcontent-wat-c47="" ngbtooltip="Delete"
                                                                         tooltipclass="weava-tooltip" placement="left"
-                                                                        class="folder-icons folder-action-icon">
+                                                                        class="folder-icons folder-action-icon" 
+                                                                        (click)="deleteFolder(subFolder.folderId, subFolder.title)">
                                                                         <div _ngcontent-wat-c47="" class="ng-fa-icon">
                                                                             <svg role="img" aria-hidden="true"
                                                                                 focusable="false" data-prefix="fas"
@@ -376,7 +377,8 @@
                                                         ngbtooltip="delete" tooltipclass="weava-tooltip"
                                                         placement="bottom" _nghost-wat-c87="">
                                                         <button _ngcontent-wat-c87="" type="button"
-                                                            class="button highlight-card-icon-button">
+                                                            class="button highlight-card-icon-button" 
+                                                            (click)="deleteFile(folderDetails.folderId, file.id)">
                                                             <span _ngcontent-wat-c87="" class="button-icon"
                                                                 style="margin-right: 0px;">
                                                                 <img _ngcontent-wat-c92=""
@@ -687,8 +689,7 @@
 
                         <div *ngIf="selectedTab === 'documents'" _ngcontent-wat-c61="" class="main-panel-list"
                             _nghost-wat-c96="">
-                            <button class="btn btn-success mx-2">Test Button</button>
-                            <button class="btn btn-danger mx-2" (click)="hidePdfView()">Hide PDF</button>
+                            <p class="py-5" align="center">This is documents section.</p>
                         </div>
 
                         <app-footer (tabChange)="switchTab($event)"></app-footer>
