@@ -12,6 +12,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AzureBlobService } from '../../services/azure-blob.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../layout/confirm-dialog/confirm-dialog.component';
+import { ShareFolderComponent } from '../../layout/share-folder/share-folder.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -59,6 +60,23 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     });
 
     this.fetchFolders();
+  }
+
+  openShareModal(folderId: string, folderName: string): void {
+    const dialogRef = this.dialog.open(ShareFolderComponent, {
+      width: '600px',
+      data: { folderId: folderId, folderName: folderName } // Pass the folder name to the dialog
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Proceed with folder deletion if user confirms
+        // this.deleteFolderApiCall(folderId);
+      } else {
+        // User cancelled the deletion, do nothing
+        console.log('Modal closed');
+      }
+    });
   }
 
   // Function to delete the folder

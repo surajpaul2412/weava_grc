@@ -7,13 +7,13 @@
             style="width: 36px;" />
         <div>
             <div class="fw-medium">{{ data.folderName }}</div>
-            <div class="text-muted small">{{ invitations.length }} contributors</div>
+            <div class="text-muted small pt-2">{{ invitations.length }} contributors</div>
         </div>
     </div>
 
     <!-- Access List -->
     <div>
-        <div class="mb-2 fw-semibold border-bottom pb-1">Who has access</div>
+        <div class="mb-2 fw-semibold border-bottom pb-1 mt-4">Who has access</div>
 
         <!-- Member 1 (Owner) -->
         <div *ngFor="let invite of acceptedInvites" class="d-flex align-items-center justify-content-between mb-2">
@@ -52,11 +52,11 @@
           </div>
 
         <!-- Invited Section -->
-        <div class="mb-2 fw-semibold border-bottom pb-1">Invited</div>
+        <div class="mb-2 fw-semibold border-bottom pb-1 mt-3">Invited</div>
     </div>
 
     <!-- Invite Input -->
-    <div class="mb-4">
+    <div class="my-4">
         <label class="form-label fw-medium">Invite people:</label>
 
         <div *ngFor="let invitation of invitations" class="d-flex align-items-center justify-content-between mb-3">
