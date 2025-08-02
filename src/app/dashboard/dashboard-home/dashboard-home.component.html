@@ -343,7 +343,7 @@
                                                         src="https://www.weavatools.com/app/assets/images/svg/pdf-website-icon.svg">
                                                 </div>
                                                 <div _ngcontent-wat-c92="" class="main-panel-website-card-data">
-                                                    <a _ngcontent-wat-c92="" rel="noopener" (click)="showPdfView(file.url)">{{file.fileName
+                                                    <a _ngcontent-wat-c92="" rel="noopener" (click)="showPdfView(file.url, file.fileName)">{{file.fileName
                                                         ?? 'unknown.pdf'}}</a>
                                                     <div _ngcontent-wat-c92="" class="main-panel-website-stat">
                                                         <div _ngcontent-wat-c92=""
@@ -1008,8 +1008,7 @@
                                             <img _ngcontent-wat-c44="" height="20" width="20"
                                                 src="https://www.weavatools.com/app/assets/images/svg/pdf-website-icon.svg">
                                         </div>
-                                        <div _ngcontent-wat-c44="" class="viewer-website-title table-cell"> FlexiP2P
-                                            Final Website QA.pdf </div>
+                                        <div _ngcontent-wat-c44="" class="viewer-website-title table-cell"> {{pdfName}} </div>
                                         <div _ngcontent-wat-c44="" class="table-cell"><img _ngcontent-wat-c44=""
                                                 src="https://www.weavatools.com/app/assets/images/svg/new-tab-icon.svg"
                                                 class="viewer-button table-cell"></div>
@@ -1054,7 +1053,7 @@
                                   [showZoomButtons]="true"
                                   [showSpreadButton]="true"
                                   [handTool]="false"
-                                  height="100vh">
+                                  height="85vh">
                                 </ngx-extended-pdf-viewer>
                               </div>
 
