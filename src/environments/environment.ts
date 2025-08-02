@@ -21,5 +21,7 @@ export const environment = {
     accountName: 'weavadev',
     containerName: 'pdfs',
     sasToken: 'sv=2025-01-05&spr=https&se=2025-04-13T21%3A32%3A06Z&sr=b&sp=cw&sig=WFpwmwfMPuRdXW4QDXoIs%2FWJDuzWr9CVv6uiy9DTigQ%3D', // Ensure this is valid
-  }
+  },
+
+  socketUrl: 'https://weavadev1.azurewebsites.net',
 };

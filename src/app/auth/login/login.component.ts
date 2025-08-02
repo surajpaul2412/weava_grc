@@ -3,13 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { faUser } from '@fortawesome/free-solid-svg-icons'; // Import the required icon
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
-// ✅ Import Angular Material Modules
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { SocketService } from '../../services/socket.service'; // ✅ Add import
 
 @Component({
   selector: 'app-login',
@@ -17,7 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   imports: [
-    FormsModule, // ✅ Required for [(ngModel)]
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
@@ -31,7 +30,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private socketService: SocketService
   ) {}
 
   onLogin() {
@@ -46,15 +46,35 @@ export class LoginComponent {
       (response) => {
         console.log('Login Response:', response);
 
-        if (response.body?.authToken) { // ✅ Check for token
-          this.showToast('Login successfully', 'success');
-          this.router.navigate(['/dashboard']); // ✅ Redirect to Dashboard
+        const token = response.body?.authToken;
+        const userId = response.body?.userId; // Optional: if available
+
+        if (token) {
+          // ✅ Save token in localStorage
+          localStorage.setItem('authToken', token);
+        
+          // Optional: Save userId
+          if (userId) {
+            localStorage.setItem('userId', userId);
+          }
+        
+          // ✅ Connect WebSocket
+          this.socketService.connect(token);
+        
+          if (userId) {
+            this.socketService.emitLogin(userId);
+          }
+        
+          this.router.navigate(['/dashboard']);
         } else {
           this.showToast('Invalid credentials. Please try again.', 'error');
         }
       },
       (error) => {
-        this.showToast(error.error?.message || 'Login failed. Please check your credentials.', 'error');
+        this.showToast(
+          error.error?.message || 'Login failed. Please check your credentials.',
+          'error'
+        );
         console.error('Login failed:', error);
       }
     );
@@ -68,6 +88,6 @@ export class LoginComponent {
   }
 
   goToSignup() {
-    this.router.navigate(['/signup']); // Programmatically navigate to the signup page
+    this.router.navigate(['/signup']);
   }
 }
