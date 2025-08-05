@@ -9,6 +9,8 @@ import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component'; // Import the confirmation dialog
 import { ShareFolderComponent } from '../share-folder/share-folder.component';
 import { EditFolderComponent } from '../edit-folder/edit-folder.component';
+import { FolderService } from '../../services/folder.service';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -31,13 +33,19 @@ export class SidebarComponent implements OnInit {
   shareFolderId: string = '';
   shareFolderName: string = '';
 
-  constructor(private router: Router, private http: HttpClient, private dialog: MatDialog, private fb: FormBuilder, private snackBar: MatSnackBar) {
+  constructor(private router: Router, private http: HttpClient, private dialog: MatDialog, private fb: FormBuilder, private snackBar: MatSnackBar, private folderService: FolderService, private socketService: SocketService) {
     this.createFolderForm = this.fb.group({ title: ['', Validators.required] });
   }
 
   ngOnInit() {
     this.loadUserData();
     // this.refreshFolders();
+
+    // ✅ Socket listener for folder list updates
+    this.socketService.subscribeToChannel('folderListUpdated', (data: any) => {
+      console.log('📂 folderListUpdated event received:', data);
+      this.refreshFolders();
+    });    
   }
 
   loadUserData() {

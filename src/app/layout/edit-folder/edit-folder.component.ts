@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';  // Import FormsModule for ngModel
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-edit-folder',
@@ -18,7 +19,8 @@ export class EditFolderComponent implements OnInit {
     public dialogRef: MatDialogRef<EditFolderComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { folderId: string, folderName: string },
     private http: HttpClient,  // Inject HttpClient to make API calls
-    private snackBar: MatSnackBar  // Inject MatSnackBar for notifications
+    private snackBar: MatSnackBar,  // Inject MatSnackBar for notifications
+    private socketService: SocketService
   ) {}
 
   ngOnInit() {
@@ -29,10 +31,7 @@ export class EditFolderComponent implements OnInit {
   saveFolder() {
     if (!this.folderName) return;  // Ensure folder name is entered
 
-    const updatedFolder = {
-      title: this.folderName  // Use the updated folder name in the payload
-    };
-
+    const updatedFolder = { title: this.folderName };
     const headers = this.getAuthHeaders();
     if (!headers) return;
 
@@ -43,6 +42,7 @@ export class EditFolderComponent implements OnInit {
     ).subscribe({
       next: (response: any) => {  // Explicit type for response
         this.showToast('Folder updated successfully!', 'success');
+        this.socketService.emitEvent('folderListUpdated', { folderId: this.data.folderId }); //socket emitted
         this.dialogRef.close(true);  // Close the dialog on success
       },
       error: (err: any) => {  // Explicit type for error
