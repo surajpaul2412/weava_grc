@@ -14,6 +14,7 @@ export const environment = {
   chromeURL: `chrome-extension://${EXTENSION_ID}`, // Chrome extension URL
   extensionId: EXTENSION_ID, // Chrome extension ID
   facebookAppId: '535363264530123', // Facebook App ID
+  facebookGraphVersion: 'v21.0',
   profitWellKey: '7ac9315395ff6284dbf6a22303c12463', // ProfitWell key
   // proxyUrl: '', // Uncomment and provide the proxy URL if required
 

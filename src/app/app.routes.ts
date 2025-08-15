@@ -4,10 +4,12 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
 import { ContributeWeavaComponent } from './contribute-weava/contribute-weava.component';
 import { AuthGuard } from './auth/auth.guard';
+import { AuthCallbackGuard } from './guards/auth-callback.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' }, // ✅ Default page is /login
   { path: 'login', component: LoginComponent },
+  { path: 'auth/callback', canActivate: [AuthCallbackGuard], component: LoginComponent }, // component optional
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardHomeComponent, canActivate: [AuthGuard] },
   { path: 'contribute-weava', component: ContributeWeavaComponent },

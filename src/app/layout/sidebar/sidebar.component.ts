@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component'; // Import the confirmation dialog
 import { ShareFolderComponent } from '../share-folder/share-folder.component';
 import { EditFolderComponent } from '../edit-folder/edit-folder.component';
+import { AccountDetailComponent } from '../account-detail/account-detail.component';
 import { FolderService } from '../../services/folder.service';
 import { SocketService } from '../../services/socket.service';
 
@@ -224,7 +225,34 @@ export class SidebarComponent implements OnInit {
         console.log('Modal closed');
       }
     });
-  }  
+  }
+
+  accountDetail() {
+    this.isProfileVisible = !this.isProfileVisible;
+    this.dimBG = !this.dimBG;
+
+
+    const dialogRef = this.dialog.open(AccountDetailComponent, {
+      width: '600px',
+      data: { folderId: 'hii' } // Passing folderId and folderName to the modal
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.refreshFolders();
+      } else {
+        console.log('Modal closed');
+      }
+    });
+  }
+
+  openChromeShortcuts(): void {
+    window.location.href = 'chrome://extensions/shortcuts';
+  }
+
+  redirectToSubscription() {
+    window.location.href = 'https://www.weavatools.com/app/subscription';
+  }
 
   showToast(message: string, type: 'success' | 'error') {
     this.snackBar.open(message, 'Close', {
@@ -242,6 +270,5 @@ export class SidebarComponent implements OnInit {
     localStorage.removeItem('user');
     this.activeFolderId = null;
     this.router.navigate(['/login']); 
-  }
-  
+  }  
 }

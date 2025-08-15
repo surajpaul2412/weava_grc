@@ -1,5 +1,73 @@
 <div class="login-container">
   <div class="login-header-section">
+    <img src="https://www.weavatools.com/app/assets/images/full-logo-black.png" class="login-image" />
+    <div class="login-text">Sign up to create your first highlight</div>
+  </div>
+
+  <div class="login-body-section">
+    <div class="login-input-wrapper">
+      <!-- Google button will render here -->
+      <div #googleBtn></div>
+    </div>
+
+    <div class="login-input-wrapper">
+      <!-- Facebook custom button -->
+      <button type="button" class="btn fb-button" (click)="onFacebook()">
+        Continue with Facebook
+      </button>
+    </div>
+
+    <form novalidate (ngSubmit)="onSignup()">
+      <div class="login-mode-break-wrapper">
+        <div class="login-mode-break-line">
+          <img src="https://www.weavatools.com/app/assets/images/svg/line-break.svg" />
+        </div>
+        <div class="login-mode-break">OR</div>
+        <div class="login-mode-break-line">
+          <img src="https://www.weavatools.com/app/assets/images/svg/line-break.svg" />
+        </div>
+      </div>
+
+      <div class="login-input-wrapper">
+        <input type="text" placeholder="First Name" [(ngModel)]="firstName" name="firstName" class="login-text-input" required />
+      </div>
+      <div class="login-input-wrapper">
+        <input type="text" placeholder="Last Name" [(ngModel)]="lastName" name="lastName" class="login-text-input" required />
+      </div>
+      <div class="login-input-wrapper">
+        <input type="email" placeholder="Email" [(ngModel)]="email" name="email" class="login-text-input" required />
+      </div>
+      <div class="login-input-wrapper">
+        <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required />
+      </div>
+      <div class="login-input-wrapper">
+        <button type="submit" class="btn login-button mb-2">Sign up</button>
+      </div>
+
+      <div class="switch-login-wrapper">
+        <div class="switch-login-mode-text">
+          <a [routerLink]="['/login']"> Existing user? </a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="login-terms-description">
+    By signing up, you agree to our <a target="_blank">Terms and Privacy</a>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<hr/>
+<div class="login-container">
+  <div class="login-header-section">
     <img
       src="https://www.weavatools.com/app/assets/images/full-logo-black.png"
       class="login-image"

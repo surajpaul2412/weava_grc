@@ -1,0 +1,44 @@
+<div class="account-details-modal p-3">
+  <!-- Modal Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0 fw-semibold">Account Details</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onCancel()"></button>
+  </div>
+
+  <!-- Profile Image -->
+  <div class="text-center mb-3">
+    <img src="https://lh3.googleusercontent.com/a/ACg8ocKiHRsH2k1I4YqKlrSDNucRlKe_2HHgK112MxFFvHkmm7uqsjTPrQ=s96-c" alt="Profile" 
+         style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+  </div>
+
+  <!-- Account Info -->
+  <div class="mb-2"><strong>Name</strong> &nbsp; Suraj Paul</div>
+  <div class="mb-2">
+    <strong>Email</strong> &nbsp; suraj.paul.69.gmail.com
+    <img src="edit-icon.png" alt="Edit" style="width: 16px; cursor: pointer; margin-left: 5px;">
+    <img src="mail-icon.png" alt="Mail" style="width: 16px; cursor: pointer; margin-left: 5px;">
+    <img src="google-icon.png" alt="Google" style="width: 16px; cursor: pointer; margin-left: 5px;">
+  </div>
+  <div class="mb-2"><strong>Subscription Plan</strong> &nbsp; Free</div>
+  <div class="mb-2"><strong>Card</strong> &nbsp; Credit card details not found.</div>
+  <div class="mb-2">
+    <strong>Referral ID</strong> &nbsp; uBKo7O0vuagjZ9Zn0SYX2xSvUVr2
+    <img src="info-icon.png" alt="Info" style="width: 14px; margin-left: 5px;">
+  </div>
+
+  <!-- Real-time Notification -->
+  <div class="mb-3 d-flex align-items-center">
+    <strong class="me-3">Real-time Notification</strong>
+    <label class="switch mb-0">
+      <input type="checkbox">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <!-- Footer Buttons -->
+  <div class="d-flex justify-content-between">
+    <button type="button" class="btn btn-secondary px-4">Invoice</button>
+    <button type="button" class="btn btn-warning px-4">Change Password</button>
+    <button type="button" class="btn btn-danger px-4">Delete Account</button>
+  </div>
+</div>
