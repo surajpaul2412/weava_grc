@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../../layout/confirm-dialog/confirm-dialog.component';
 import { ShareFolderComponent } from '../../layout/share-folder/share-folder.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -50,7 +51,8 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     private router: Router,
     private azureBlobService: AzureBlobService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private socketService: SocketService
   ) {}
 
   ngOnInit() {
@@ -61,6 +63,11 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
     });
 
     this.fetchFolders();
+
+    this.socketService.subscribeToChannel('folderListUpdated', (data: any) => {
+      console.log('📂 folderListUpdated event received:', data);
+      this.fetchFolders();
+    }); 
   }
 
   openShareModal(folderId: string, folderName: string): void {
@@ -107,7 +114,7 @@ export class DashboardHomeComponent implements OnInit, AfterViewInit {
       (response) => {
         this.snackBar.open('Folder deleted successfully!', 'Close', { duration: 3000 });
         // After deletion, refresh both the folder list (sidebar) and folder details
-        this.fetchFolders();  // Refresh the sidebar
+        this.socketService.emitEvent('folderListUpdated', 'Folder deleted');
         this.fetchFolderDetails(this.activeFolderId); // Refresh the folder details after deletion
       },
       (error) => {

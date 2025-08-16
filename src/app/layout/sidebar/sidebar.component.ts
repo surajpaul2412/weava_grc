@@ -40,7 +40,6 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserData();
-    // this.refreshFolders();
 
     // ✅ Socket listener for folder list updates
     this.socketService.subscribeToChannel('folderListUpdated', (data: any) => {
@@ -105,7 +104,7 @@ export class SidebarComponent implements OnInit {
       () => {
         this.createFolderForm.reset({ title: '' }); // ✅ Clear input field after submission
         this.folderCreated.emit(); // Notify parent component
-        this.refreshFolders(); // ✅ Refresh the folder list
+        this.socketService.emitEvent('folderListUpdated', 'folder created');
         this.showToast('Folder created successfully', 'success');
       },
       error => console.error('❌ Error creating folder:', error)
@@ -154,7 +153,7 @@ export class SidebarComponent implements OnInit {
       next: (response) => {
         console.log('Subfolder created successfully', response);
         this.showToast('Subfolder created successfully', 'success');
-        this.refreshFolders();  // Refresh folder list to show new folder
+        this.socketService.emitEvent('folderListUpdated', 'Sub-folder created');
       },
       error: (error) => {
         console.error('Error creating subfolder:', error);
@@ -175,7 +174,7 @@ export class SidebarComponent implements OnInit {
       (response) => {
         // Display success message
         this.showToast('Folder deleted successfully', 'success');
-        this.refreshFolders();
+        this.socketService.emitEvent('folderListUpdated', 'folder deleted');
 
         // If the active folder was deleted, navigate to another folder or the first folder
         if (this.activeFolderId === folderId) {
@@ -220,7 +219,7 @@ export class SidebarComponent implements OnInit {
   
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.refreshFolders();
+        
       } else {
         console.log('Modal closed');
       }
@@ -230,7 +229,6 @@ export class SidebarComponent implements OnInit {
   accountDetail() {
     this.isProfileVisible = !this.isProfileVisible;
     this.dimBG = !this.dimBG;
-
 
     const dialogRef = this.dialog.open(AccountDetailComponent, {
       width: '600px',
