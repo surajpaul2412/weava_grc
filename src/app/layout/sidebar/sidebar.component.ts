@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog'; // Import MatDialog
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component'; // Import the confirmation dialog
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { ShareFolderComponent } from '../share-folder/share-folder.component';
 import { EditFolderComponent } from '../edit-folder/edit-folder.component';
 import { AccountDetailComponent } from '../account-detail/account-detail.component';
@@ -34,26 +34,118 @@ export class SidebarComponent implements OnInit {
   shareFolderId: string = '';
   shareFolderName: string = '';
 
-  constructor(private router: Router, private http: HttpClient, private dialog: MatDialog, private fb: FormBuilder, private snackBar: MatSnackBar, private folderService: FolderService, private socketService: SocketService) {
+  // ===== Storage UI state =====
+  storage = {
+    plan: 'Free',
+    quotaBytes: 0,
+    usedBytes: 0,
+    remainingBytes: 0,
+    percentUsed: 0,
+    breakdown: { totalSize: 0, pdfSize: 0 }
+  };
+  // Derived UI fields
+  progressPercent = 0;      // e.g., 12.34 (for width:% and aria-valuenow)
+  usedHuman = '0 B';        // e.g., "6.69 KB"
+  quotaHuman = '0 B';       // e.g., "100 MB"
+
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private dialog: MatDialog,
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private folderService: FolderService,
+    private socketService: SocketService
+  ) {
     this.createFolderForm = this.fb.group({ title: ['', Validators.required] });
   }
 
   ngOnInit() {
     this.loadUserData();
 
+    // Load storage usage (new)
+    this.fetchStorageUsage();
+
     // ✅ Socket listener for folder list updates
     this.socketService.subscribeToChannel('folderListUpdated', (data: any) => {
-      console.log('📂 folderListUpdated event received:', data);
       this.refreshFolders();
-    });    
+    });
+
+    this.socketService.subscribeToChannel('storageUpdated', (data: any) => {
+      this.fetchStorageUsage();
+    });
   }
 
+  // ====== Storage usage ======
+  private getAuthHeaders(): HttpHeaders {
+    const user = localStorage.getItem('user');
+    if (!user) return new HttpHeaders();
+    const parsed = JSON.parse(user);
+    return new HttpHeaders().set('Authorization', `Bearer ${parsed.authToken}`);
+  }
+
+  fetchStorageUsage(): void {
+    const headers = this.getAuthHeaders();
+    this.http.get<any>('https://weavadev1.azurewebsites.net/storage/usage', { headers })
+      .subscribe({
+        next: (resp) => {
+          // Expecting:
+          // { plan, quotaBytes, usedBytes, remainingBytes, percentUsed, breakdown: { totalSize, pdfSize } }
+          this.storage = {
+            plan: resp?.plan ?? 'Free',
+            quotaBytes: resp?.quotaBytes ?? 0,
+            usedBytes: resp?.usedBytes ?? 0,
+            remainingBytes: resp?.remainingBytes ?? 0,
+            percentUsed: resp?.percentUsed ?? 0,
+            breakdown: {
+              totalSize: resp?.breakdown?.totalSize ?? 0,
+              pdfSize: resp?.breakdown?.pdfSize ?? 0
+            }
+          };
+
+          // Derive UI values
+          // API percentUsed seems in [0,1], convert to percentage
+          const pct = (this.storage.percentUsed || 0) * 100;
+          this.progressPercent = Number.isFinite(pct) ? Math.min(Math.max(pct, 0), 100) : 0;
+
+          this.usedHuman = this.formatBytes(this.storage.usedBytes);
+          this.quotaHuman = this.formatBytes(this.storage.quotaBytes);
+
+          // Debug
+          // console.log('Storage usage loaded:', this.storage, this.progressPercent, this.usedHuman, this.quotaHuman);
+        },
+        error: (err) => {
+          console.error('❌ Error fetching storage usage:', err);
+          // Fallback to zeros to avoid broken UI
+          this.storage = { plan: 'Free', quotaBytes: 0, usedBytes: 0, remainingBytes: 0, percentUsed: 0, breakdown: { totalSize: 0, pdfSize: 0 } };
+          this.progressPercent = 0;
+          this.usedHuman = '0 B';
+          this.quotaHuman = '0 B';
+        }
+      });
+  }
+
+  private formatBytes(bytes: number): string {
+    if (!bytes || bytes < 0) bytes = 0;
+    const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+    let i = 0;
+    let val = bytes;
+    while (val >= 1024 && i < units.length - 1) {
+      val /= 1024;
+      i++;
+    }
+    // 2 decimal places for KB+, no decimals for bytes
+    const fixed = i === 0 ? val.toString() : val.toFixed(2);
+    return `${fixed} ${units[i]}`;
+  }
+
+  // ===== Existing code (unchanged) =====
   loadUserData() {
     const user = localStorage.getItem('user');
     if (user) {
       try {
         const parsedUser = JSON.parse(user);
-        this.userName = parsedUser.displayName || 'Guest'; 
+        this.userName = parsedUser.displayName || 'Guest';
       } catch (error) {
         console.error('Error parsing user data from localStorage:', error);
         this.userName = 'Guest';
@@ -66,7 +158,7 @@ export class SidebarComponent implements OnInit {
   refreshFolders() {
     const user = localStorage.getItem('user');
     if (!user) return console.error('User not found in localStorage');
-    
+
     const parsedUser = JSON.parse(user);
     const headers = new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
 
@@ -86,7 +178,7 @@ export class SidebarComponent implements OnInit {
   setFolder(folderId: string, event?: Event) {
     if (event) event.stopPropagation();
     if (this.activeFolderId === folderId) return;
-    
+
     this.activeFolderId = folderId;
     this.folderSelected.emit(folderId);
   }
@@ -102,8 +194,8 @@ export class SidebarComponent implements OnInit {
 
     this.http.post('https://weavadev1.azurewebsites.net/folders/root', folderData, { headers }).subscribe(
       () => {
-        this.createFolderForm.reset({ title: '' }); // ✅ Clear input field after submission
-        this.folderCreated.emit(); // Notify parent component
+        this.createFolderForm.reset({ title: '' });
+        this.folderCreated.emit();
         this.socketService.emitEvent('folderListUpdated', 'folder created');
         this.showToast('Folder created successfully', 'success');
       },
@@ -113,15 +205,13 @@ export class SidebarComponent implements OnInit {
 
   deleteFolder(folderId: string, folderName: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: { folderName: folderName } // Pass the folder name to the dialog
+      data: { folderName: folderName }
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        // Proceed with folder deletion if user confirms
         this.deleteFolderApiCall(folderId);
       } else {
-        // User cancelled the deletion, do nothing
         console.log('Folder deletion cancelled');
       }
     });
@@ -141,8 +231,6 @@ export class SidebarComponent implements OnInit {
 
     const parsedUser = JSON.parse(user);
     const headers = new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
-
-    // Example new folder title; you might want to get this from UI input
     const newFolderData = { title: 'New Sub Folder' };
 
     this.http.post(
@@ -171,18 +259,14 @@ export class SidebarComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${parsedUser.authToken}`);
 
     this.http.delete(`https://weavadev1.azurewebsites.net/folders/${folderId}`, { headers }).subscribe(
-      (response) => {
-        // Display success message
+      () => {
         this.showToast('Folder deleted successfully', 'success');
         this.socketService.emitEvent('folderListUpdated', 'folder deleted');
 
-        // If the active folder was deleted, navigate to another folder or the first folder
         if (this.activeFolderId === folderId) {
           if (this.folders.length > 0) {
-            // Set the first folder as active
             this.activeFolderId = this.folders[0].folderId;
           } else {
-            // If no folders remain, navigate to the homepage or a default page
             this.router.navigate(['/']);
           }
         }
@@ -197,32 +281,22 @@ export class SidebarComponent implements OnInit {
   openShareModal(folderId: string, folderName: string): void {
     const dialogRef = this.dialog.open(ShareFolderComponent, {
       width: '600px',
-      data: { folderId: folderId, folderName: folderName } // Pass the folder name to the dialog
+      data: { folderId: folderId, folderName: folderName }
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // Proceed with folder deletion if user confirms
-        // this.deleteFolderApiCall(folderId);
-      } else {
-        // User cancelled the deletion, do nothing
-        console.log('Modal closed');
-      }
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('Modal closed');
     });
   }
 
   openEditModal(folderId: string, folderName: string): void {
     const dialogRef = this.dialog.open(EditFolderComponent, {
       width: '300px',
-      data: { folderId: folderId, folderName: folderName } // Passing folderId and folderName to the modal
+      data: { folderId: folderId, folderName: folderName }
     });
-  
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        
-      } else {
-        console.log('Modal closed');
-      }
+
+    dialogRef.afterClosed().subscribe(() => {
+      console.log('Modal closed');
     });
   }
 
@@ -232,9 +306,9 @@ export class SidebarComponent implements OnInit {
 
     const dialogRef = this.dialog.open(AccountDetailComponent, {
       width: '600px',
-      data: { folderId: 'hii' } // Passing folderId and folderName to the modal
+      data: { folderId: 'hii' }
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.refreshFolders();
@@ -267,6 +341,6 @@ export class SidebarComponent implements OnInit {
   signout() {
     localStorage.removeItem('user');
     this.activeFolderId = null;
-    this.router.navigate(['/login']); 
-  }  
+    this.router.navigate(['/login']);
+  }
 }

@@ -3,6 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NotificationModalComponent } from '../notification-modal/notification-modal.component';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common'; // ✅ Import this
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-header',
@@ -15,10 +16,14 @@ export class HeaderComponent implements OnInit {
   @Input() activeFolderName: string = '';
   notificationCount: number = 0;
 
-  constructor(private modalService: NgbModal, private http: HttpClient) {}
+  constructor(private modalService: NgbModal, private http: HttpClient, private socketService: SocketService) {}
 
   ngOnInit(): void {
     this.fetchNotificationCount();
+
+    this.socketService.subscribeToChannel('notificationUpdated', (data: any) => {
+      this.fetchNotificationCount();
+    });
   }
 
   fetchNotificationCount() {

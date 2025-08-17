@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar'; // ✅ Add this
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-share-folder',
@@ -21,12 +22,18 @@ export class ShareFolderComponent {
     public dialogRef: MatDialogRef<ShareFolderComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { folderId: string, folderName: string },
     private http: HttpClient,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private socketService: SocketService
   ) {}
 
   ngOnInit() {
     this.fetchInvitations(); // Fetch invitations when the component initializes
     this.fetchAcceptedInvites();
+
+    this.socketService.subscribeToChannel('notificationUpdated', (data: any) => {
+      this.fetchInvitations();
+      this.fetchAcceptedInvites();
+    });
   }
 
   fetchInvitations() {
@@ -99,8 +106,7 @@ export class ShareFolderComponent {
           console.log('✅ Response:', response);
           this.showToast('Invitation sent successfully!', 'success');
           this.inviteEmail = '';
-          this.fetchInvitations(); // Refresh the invite list after sending invitation
-          this.fetchAcceptedInvites();
+          this.socketService.emitEvent('notificationUpdated', 'User Invited');
         },
         error: (err) => {
           console.error('❌ Error inviting user:', err);

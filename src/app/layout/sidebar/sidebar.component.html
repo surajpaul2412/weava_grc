@@ -701,21 +701,18 @@
             <div
               _ngcontent-plr-c66=""
               role="progressbar"
-              aria-valuemin="0"
-              height="10px"
               class="progress"
-              aria-valuenow="0.006537437438964844"
-              aria-valuemax="100"
+              [attr.aria-valuemin]="0"
+              [attr.aria-valuemax]="100"
+              [attr.aria-valuenow]="progressPercent"
               aria-label="progress bar"
               style="height: 10px"
             >
-              <div class="progress-bar text-bg-info" style="width: 0.0065374%">
-                <!---->
-              </div>
+              <div class="progress-bar text-bg-info" [style.width.%]="progressPercent"></div>
             </div>
             <div _ngcontent-plr-c66="" class="storage-value">
-              <span _ngcontent-plr-c66="">6.69 KB</span
-              ><span _ngcontent-plr-c66=""> of 100 MB used</span>
+              <span _ngcontent-plr-c66="">{{usedHuman}}</span
+              ><span _ngcontent-plr-c66=""> of {{quotaHuman}} used</span>
             </div>
             <button
               _ngcontent-plr-c66=""
