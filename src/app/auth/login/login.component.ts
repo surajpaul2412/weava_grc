@@ -36,50 +36,8 @@ export class LoginComponent {
   ) {}
 
   loginWithGoogle() {
-    const width = 500, height = 600;
-    const left = window.screenX + (window.outerWidth - width) / 2;
-    const top  = window.screenY + (window.outerHeight - height) / 2;
-  
-    const popup = window.open(
-      `${environment.apiBaseUrl}/auth/google`,
-      'GoogleSignIn',
-      `width=${width},height=${height},top=${top},left=${left}`
-    );
-  
-    const allowedOrigin = window.location.origin; // https://weavadev.z10.web.core.windows.net
-  
-    const onMessage = (event: MessageEvent) => {
-      if (event.origin !== allowedOrigin) return;
-  
-      const data = event.data || {};
-      // Expecting: { authToken, uid, email, displayName?, expirationTime? }
-      if (data?.authToken && data?.uid) {
-        const userObj = {
-          authToken: data.authToken,
-          createdAt: data.createdAt ?? Date.now(),
-          displayName: data.displayName ?? '',
-          email: data.email ?? '',
-          emailVerified: !!data.emailVerified,
-          expirationTime: data.expirationTime ?? '3600',
-          uid: data.uid
-        };
-        localStorage.setItem('user', JSON.stringify(userObj));
-        localStorage.setItem('authToken', data.authToken);
-  
-        try {
-          this.socketService.connect(data.authToken);
-          this.socketService.emitLogin(data.uid);
-        } catch {}
-  
-        this.router.navigate(['/dashboard']);
-      }
-  
-      window.removeEventListener('message', onMessage);
-      popup?.close();
-    };
-  
-    window.addEventListener('message', onMessage, { once: true });
-  }
+    window.location.href = 'https://weavadev1.azurewebsites.net/auth/google';
+  }  
 
   onLogin() {
     if (!this.email || !this.password) {

@@ -1,36 +1,3 @@
-<!-- login.component.html -->
-<div class="login-container">
-  <!-- ... your existing markup above ... -->
-
-  <!-- Replace the big Google snippet with this button -->
-  <div class="login-input-wrapper">
-    <button type="button" class="btn btn-google-login" (click)="loginWithGoogle()">
-      Continue with Google
-    </button>
-  </div>
-
-  <!-- keep your email/password form as-is -->
-  <!-- ... rest of your existing HTML ... -->
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <div class="login-container">
   <div class="login-header-section">
     <img
@@ -40,6 +7,11 @@
     <div class="login-text">Sign in to access your highlights</div>
   </div>
   <div class="login-body-section">
+    <div class="login-input-wrapper">
+      <button type="button" class="btn btn-google-login" (click)="loginWithGoogle()">
+        Continue with Google
+      </button>
+    </div>
     <div class="login-input-wrapper">
       <div
         id="g_id_onload"
